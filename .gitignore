@@ -1,0 +1,58 @@
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# IntelliJ / IDE
+# =========================
+.idea/
+*.iml
+out/
+
+# =========================
+# Node / optional tooling
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+
+# =========================
+# Blockchain sensitive data
+# =========================
+# Validator keys (WICHTIG!)
+nodes/**/key
+nodes/**/key.pub
+nodes/**/data/
+
+# Generated network files
+nodes/networkFiles/
+
+# =========================
+# Docker
+# =========================
+docker-data/
+*.log
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.temp
+*.swp
+
+# =========================
+# Experiment outputs (später)
+# =========================
+results/
+metrics/
+plots/
