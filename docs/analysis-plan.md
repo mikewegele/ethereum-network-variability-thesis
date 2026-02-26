@@ -21,8 +21,9 @@ For each run:
 
 - compute per-block statistics
 - compute per-transaction statistics
-- detect stall events
-- store summary in a structured results file
+- compute chain growth rate (CGR)
+- detect stall events (k-based)
+- store summary in structured results file
 
 Output:
 
@@ -37,8 +38,8 @@ experiments/results/<run_id>/summary.json
 From blocks.jsonl:
 
 - mean block time
-- block time variance
-- block time standard deviation
+- variance
+- maximum inter-block gap
 
 Purpose:
 
@@ -60,13 +61,34 @@ Capture user-visible performance impact.
 
 ---
 
-### Stall Indicators
+### Chain Growth Indicators
 
 From block observations:
 
+- CGR(W) with W = 60s
+- trend of CGR across stress levels
+
+Purpose:
+
+Quantify consensus progress rate continuously.
+
+---
+
+### Stall Indicators
+
+Using:
+
+T_stall = k × T_baseline
+
+Metrics:
+
 - stall_event_count
-- total_stall_duration
+- max_interblock_gap
 - time_to_first_stall
+
+Sensitivity:
+
+Evaluate k ∈ {3,4,5,6}
 
 Purpose:
 
@@ -95,8 +117,8 @@ Reduce noise and support statistically meaningful comparisons.
 Method:
 
 - plot latency vs block time variance
-- plot latency vs inclusion delay
-- check stall occurrence
+- plot latency vs CGR
+- check stall occurrence across k values
 
 Expected pattern:
 
@@ -124,7 +146,7 @@ Method:
 
 Decision rule:
 
-Consensus considered broken if stall_event_count > 0.
+Consensus considered broken if stall occurs consistently across k values.
 
 ---
 
@@ -143,30 +165,12 @@ Method:
 Method:
 
 - map parameter space
-- mark configurations with stalls
-- identify transition region
+- mark configurations with sustained stalls
+- identify transition region stable across k values
 
 Visualization:
 
 Heatmap or phase diagram recommended.
-
----
-
-## Visualization Plan
-
-Recommended plots:
-
-1. Latency vs block time variance (line plot)
-2. Latency vs inclusion delay (line plot)
-3. Bandwidth vs inclusion delay (line plot)
-4. Validator failures vs stall probability (bar plot)
-5. Robustness phase diagram (heatmap)
-
-All plots should include:
-
-- mean value
-- error bars (std dev)
-- number of runs (R)
 
 ---
 
@@ -176,19 +180,8 @@ Given the experimental nature:
 
 - descriptive statistics are primary
 - confidence intervals optional
-- hypothesis tests optional (not required for master level)
+- hypothesis tests optional
 
 Focus:
 
-Clear trends and reproducible behavior.
-
----
-
-## Result Validation
-
-Before interpreting results:
-
-- verify peer connectivity during runs
-- check for measurement errors
-- confirm load generator activity
-- inspect logs for anomalies
+Clear trends, reproducibility, and stability across parameter sensitivity.

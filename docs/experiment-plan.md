@@ -4,7 +4,7 @@
 
 The objective of this study is to evaluate the impact of network variability on the performance and consensus stability of private Ethereum networks using IBFT2.
 
-The experiments aim to identify robustness boundaries at which the system transitions from degraded but correct operation to stalled consensus.
+The experiments aim to identify robustness boundaries at which the system transitions from degraded but correct operation to stalled or near-stalled consensus execution.
 
 ---
 
@@ -23,6 +23,7 @@ Test levels:
 - L4: 400 ms
 
 Rationale:
+
 These levels cover typical data center conditions up to severely degraded wide-area scenarios.
 
 ---
@@ -39,6 +40,7 @@ Test levels:
 - B3: 128 kbps
 
 Rationale:
+
 These levels emulate constrained edge and degraded network environments.
 
 ---
@@ -54,7 +56,8 @@ Test levels (for N=4 validators):
 - V2: 2 validators offline
 
 Rationale:
-IBFT requires quorum participation; these scenarios explore behavior near and beyond quorum limits.
+
+IBFT requires quorum participation. These scenarios explore behavior near and beyond quorum limits.
 
 ---
 
@@ -65,14 +68,36 @@ For each parameter configuration:
 1. Start the network and allow warm-up.
 2. Apply network impairment.
 3. Submit background transactions.
-4. Record metrics.
-5. Detect degraded or stalled consensus behavior.
+4. Record metrics continuously.
+5. Compute:
+    - block time statistics
+    - chain growth rate (CGR)
+    - stall events (k-based threshold)
 6. Repeat each experiment multiple times.
+
+---
+
+## Stall Classification Strategy
+
+Consensus is operationally classified as stalled when:
+
+block_time ≥ T_stall
+
+where:
+
+T_stall = k × T_baseline
+
+Additionally, chain growth rate over a sliding window W = 60 seconds is computed to quantify consensus progress continuously.
+
+This dual approach distinguishes:
+
+- gradual degradation (increased variance, reduced CGR)
+- qualitative breakdown (near-zero CGR or repeated stall events)
 
 ---
 
 ## Expected Outcomes
 
-- Increasing latency and bandwidth constraints will increase block time variance.
-- Severe network stress or insufficient validator availability will lead to stalled consensus.
-- Clear robustness thresholds can be identified.
+- Increasing latency and bandwidth constraints increase block time variance.
+- Severe network stress or insufficient validator availability reduces chain growth rate.
+- Clear robustness boundaries emerge where stall events occur consistently across k values.

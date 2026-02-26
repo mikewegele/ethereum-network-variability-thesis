@@ -8,21 +8,22 @@ This section defines the testable hypotheses regarding the impact of network var
 
 **Hypothesis**
 
-Increasing network latency leads to increased block time variance and transaction inclusion delay while consensus remains operational within the synchrony bounds.
+Increasing network latency increases block time variance and transaction inclusion delay while consensus remains operational within synchrony bounds.
 
 **Rationale**
 
-IBFT2 relies on timely message exchange. Higher latency increases communication delays, which should manifest as performance degradation before liveness is affected.
+IBFT2 relies on timely message exchange. Higher latency increases communication delay before liveness is affected.
 
 **Test Metrics**
 
 - block time variance
 - transaction inclusion delay
+- chain growth rate (CGR)
 - stall event count
 
 **Expected Outcome**
 
-Gradual degradation without stalls for moderate latency levels.
+Gradual degradation without sustained stalls at moderate latency levels.
 
 ---
 
@@ -30,16 +31,17 @@ Gradual degradation without stalls for moderate latency levels.
 
 **Hypothesis**
 
-Severe bandwidth limitations increase transaction inclusion delay and may lead to irregular block production due to delayed message propagation.
+Severe bandwidth limitations increase inclusion delay and may reduce chain growth rate due to delayed message propagation.
 
 **Rationale**
 
-IBFT requires multiple message exchanges per round. Bandwidth constraints can delay quorum formation.
+IBFT requires multiple message exchanges per round. Bandwidth constraints slow quorum formation.
 
 **Test Metrics**
 
 - transaction inclusion delay
 - block time variance
+- CGR
 - peer connectivity (supporting)
 
 **Expected Outcome**
@@ -52,7 +54,7 @@ Limited impact at moderate bandwidth limits, stronger degradation at extreme con
 
 **Hypothesis**
 
-If the number of available validators falls below the IBFT quorum requirement, consensus progress stalls.
+If available validators fall below the IBFT quorum requirement, consensus progress stalls.
 
 **Rationale**
 
@@ -61,6 +63,7 @@ IBFT guarantees safety under partial synchrony but requires quorum participation
 **Test Metrics**
 
 - stall event detection
+- chain growth rate (approaching zero)
 - block production continuity
 - peer count
 
@@ -74,16 +77,17 @@ Stable operation with ≤1 validator offline (N=4), stalled consensus with ≥2 
 
 **Hypothesis**
 
-Combined network impairments (latency + bandwidth + reduced validator availability) trigger consensus instability earlier than single-factor stress.
+Combined impairments (latency + bandwidth + reduced validator availability) trigger instability earlier than single-factor stress.
 
 **Rationale**
 
-Multiple impairments jointly increase the probability of delayed or failed quorum formation.
+Multiple impairments increase the probability of delayed quorum formation and timeout escalation.
 
 **Test Metrics**
 
 - block time variance
 - stall event count
+- CGR
 - recovery behavior
 
 **Expected Outcome**
@@ -104,10 +108,10 @@ Partially synchronous consensus protocols exhibit phase-transition-like behavior
 
 **Test Metrics**
 
-- stall occurrence probability
-- block time variance trends
+- stall occurrence probability across k values
+- chain growth rate trends
 - recovery success
 
 **Expected Outcome**
 
-Observable boundary between stable and unstable operating regions.
+Observable boundary between stable and unstable operating regions, consistent across sensitivity parameters.

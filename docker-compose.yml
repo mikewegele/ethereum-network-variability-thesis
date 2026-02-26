@@ -2,17 +2,17 @@ services:
   validator1:
     image: hyperledger/besu:latest
     container_name: validator1
+    cap_add:
+      - NET_ADMIN
     command:
       - --data-path=/var/lib/besu/data
       - --genesis-file=/config/genesis.json
-
       - --rpc-http-enabled
       - --rpc-http-host=0.0.0.0
       - --rpc-http-port=8545
       - --rpc-http-api=ETH,NET,IBFT
       - --host-allowlist=*
       - --rpc-http-cors-origins=all
-
       - --profile=ENTERPRISE
       - --p2p-interface=0.0.0.0
       - --p2p-port=30303
@@ -28,16 +28,16 @@ services:
   validator2:
     image: hyperledger/besu:latest
     container_name: validator2
+    cap_add:
+      - NET_ADMIN
     depends_on: [validator1]
     command:
       - --data-path=/var/lib/besu/data
       - --genesis-file=/config/genesis.json
-
       - --profile=ENTERPRISE
       - --p2p-interface=0.0.0.0
       - --p2p-port=30303
       - --nat-method=NONE
-
       - --bootnodes=${BOOTNODE_ENODE}
       - --logging=INFO
     volumes:
@@ -47,16 +47,16 @@ services:
   validator3:
     image: hyperledger/besu:latest
     container_name: validator3
+    cap_add:
+      - NET_ADMIN
     depends_on: [validator1]
     command:
       - --data-path=/var/lib/besu/data
       - --genesis-file=/config/genesis.json
-
       - --profile=ENTERPRISE
       - --p2p-interface=0.0.0.0
       - --p2p-port=30303
       - --nat-method=NONE
-
       - --bootnodes=${BOOTNODE_ENODE}
       - --logging=INFO
     volumes:
@@ -66,16 +66,16 @@ services:
   validator4:
     image: hyperledger/besu:latest
     container_name: validator4
+    cap_add:
+      - NET_ADMIN
     depends_on: [validator1]
     command:
       - --data-path=/var/lib/besu/data
       - --genesis-file=/config/genesis.json
-
       - --profile=ENTERPRISE
       - --p2p-interface=0.0.0.0
       - --p2p-port=30303
       - --nat-method=NONE
-
       - --bootnodes=${BOOTNODE_ENODE}
       - --logging=INFO
     volumes:

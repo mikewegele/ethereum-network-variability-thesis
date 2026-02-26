@@ -71,3 +71,14 @@ Each experiment configuration is repeated:
 
 Purpose:
 Reduce variance and increase statistical confidence.
+
+---
+
+## Analysis Parameters
+
+In addition to network stress factors, the following analysis parameters are applied:
+
+- k ∈ {3, 4, 5, 6} (stall sensitivity factor)
+- W = 60 seconds (chain growth observation window)
+
+These parameters affect analysis only and do not modify system behavior.

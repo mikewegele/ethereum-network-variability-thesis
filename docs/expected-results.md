@@ -2,21 +2,34 @@
 
 This document outlines the expected qualitative behavior of the system under different network stress conditions. The purpose is to guide later interpretation and detect unexpected behavior.
 
+Consensus progress is evaluated using:
+
+- block time statistics
+- chain growth rate (CGR)
+- stall detection based on:
+
+  T_stall = k × T_baseline  
+  with k ∈ {3, 4, 5, 6}
+
 ---
 
 ## Baseline Behavior (No Stress)
 
 ### Expected
 
-- stable block production at configured block period (~2 seconds)
+- stable block production near configured block period (~2 seconds)
 - low block time variance
-- low and stable transaction inclusion delay
-- no stall events
+- high and stable chain growth rate
+- no stall events for any tested k
 - stable peer connectivity
 
 ### Interpretation
 
-This establishes the reference operating point for all subsequent comparisons.
+This establishes the reference operating point and defines T_baseline used for stall detection.
+
+CGR should remain constant and close to:
+
+1 / block_period
 
 ---
 
@@ -28,20 +41,23 @@ As latency increases:
 
 1. block time variance increases gradually
 2. transaction inclusion delay increases
-3. consensus remains operational under moderate latency
-4. stalls may appear only at high latency levels
+3. chain growth rate decreases moderately
+4. stall events appear only at high latency levels
+5. stall occurrence should be consistent across k values at high stress
 
 ### Expected Shape
 
-- monotonic or near-monotonic degradation
-- smooth curve before any failure region
+- smooth degradation phase
+- followed by sharp transition region
+- then sustained stall region (CGR approaching zero)
 
 ### Warning Signs
 
 Unexpected if:
 
 - stalls occur at very low latency
-- block production becomes irregular early
+- stall classification depends heavily on k
+- CGR collapses abruptly at moderate latency
 - peer connectivity drops without injected faults
 
 ---
@@ -53,13 +69,16 @@ Unexpected if:
 Under decreasing bandwidth:
 
 - minor impact at moderate limits (≥10 Mbps)
-- increasing inclusion delay at low bandwidth
-- possible irregular block times under severe limits
-- stalls only under extreme bandwidth constraints
+- gradual increase in inclusion delay
+- increased block time variance under severe limits
+- chain growth rate decreases only at extreme bandwidth constraints
+- stalls occur only when communication becomes heavily constrained
 
 ### Expected Sensitivity
 
-Bandwidth effects are expected to be weaker than latency effects until the network becomes heavily constrained.
+Bandwidth effects are expected to be weaker than latency effects until near saturation.
+
+Stall events should appear only when CGR significantly decreases.
 
 ---
 
@@ -68,12 +87,19 @@ Bandwidth effects are expected to be weaker than latency effects until the netwo
 ### Expected Behavior (N = 4)
 
 - V0 (0 offline): fully stable
-- V1 (1 offline): consensus should remain live
-- V2 (2 offline): consensus should stall (quorum violation)
+- V1 (1 offline): consensus remains live
+- V2 (2 offline): consensus stalls due to quorum violation
+
+### Expected Metrics
+
+- For V2:
+    - CGR approaches zero
+    - repeated stall events across all k values
+    - sustained inter-block gaps
 
 ### Key Check
 
-This experiment validates correct IBFT quorum behavior.
+This validates correct IBFT quorum behavior and confirms that stall detection aligns with theoretical quorum requirements.
 
 ---
 
@@ -83,13 +109,15 @@ This experiment validates correct IBFT quorum behavior.
 
 Combined impairments should:
 
-- amplify performance degradation
-- increase block time variance faster
+- amplify block time variance
+- reduce chain growth rate faster
 - trigger stalls earlier than single-factor stress
 
 ### Expected Pattern
 
 Non-linear degradation is likely.
+
+Transition region should be sharper compared to single-factor experiments.
 
 ---
 
@@ -101,15 +129,20 @@ There exists a parameter region where the system transitions from:
 
 stable → degraded → stalled
 
-### Expected Visualization
+This transition should be observable through:
 
-In the parameter space:
+- sharp drop in chain growth rate
+- repeated stall events
+- significant increase in maximum inter-block gap
 
-- clear region of stable operation
-- transition zone with increasing instability
-- failure region with frequent stalls
+### Robustness Criterion
 
-This boundary is a primary contribution of the thesis.
+The boundary should remain qualitatively stable across:
+
+- k ∈ {3, 4, 5, 6}
+- repeated experimental runs
+
+This stability confirms that the observed transition is a system property rather than an artifact of parameter selection.
 
 ---
 
@@ -119,9 +152,10 @@ This boundary is a primary contribution of the thesis.
 
 After removing impairments:
 
-- block production should resume
-- peer connectivity should recover
-- inclusion delay should normalize
+- block production resumes
+- chain growth rate returns to baseline levels
+- peer connectivity stabilizes
+- inclusion delay normalizes
 
 ### Important Note
 
@@ -130,6 +164,7 @@ Failure to recover may indicate:
 - persistent partition effects
 - implementation limitations
 - misconfiguration
+- timeout escalation effects in IBFT
 
 ---
 
@@ -138,9 +173,10 @@ Failure to recover may indicate:
 The following observations require deeper analysis:
 
 - stalls under light stress
+- strong dependence on k value
 - no stalls even after quorum violation
 - highly irregular block production at baseline
 - persistent peer disconnections
 - inconsistent behavior across repetitions
 
-Such cases must be cross-checked with logs and network conditions.
+Such cases must be cross-checked with logs, network conditions, and timeout parameters.
