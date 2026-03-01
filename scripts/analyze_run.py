@@ -57,6 +57,7 @@ def main():
     ap.add_argument("--k", type=float, default=5.0)
     ap.add_argument("--stall_threshold_s", type=float, default=None)
     ap.add_argument("--window_s", type=float, default=60.0)
+    ap.add_argument("--block_period_s", type=float, default=2.0)
     args = ap.parse_args()
 
     blocks = load_blocks(args.run)
@@ -84,8 +85,8 @@ def main():
             stall_threshold = args.k * baseline_median
             threshold_source = "baseline_median"
         else:
-            stall_threshold = 10.0
-            threshold_source = "default_fallback_10s"
+            stall_threshold = args.k * args.block_period_s
+            threshold_source = "block_period_fallback"
 
     stalls = []
     for i in range(1, len(blocks)):
@@ -111,6 +112,7 @@ def main():
         "stall_threshold_source": threshold_source,
         "baseline_median_block_time_s": baseline_median,
         "k": args.k,
+        "block_period_s": args.block_period_s,
         "stall_event_count": len(stalls),
         "stall_events": stalls,
         "chain_growth_rate_blocks_per_s_windowed": cgr,
