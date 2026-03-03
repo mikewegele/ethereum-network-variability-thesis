@@ -3,6 +3,7 @@ import json
 import os
 import statistics
 
+
 def read_jsonl(path: str):
     out = []
     if not os.path.exists(path):
@@ -18,11 +19,13 @@ def read_jsonl(path: str):
             out.append(obj)
     return out
 
+
 def load_blocks(run_dir: str):
     blocks_path = os.path.join(run_dir, "rpc", "blocks.jsonl")
     blocks = read_jsonl(blocks_path)
     blocks = sorted(blocks, key=lambda x: x["blockNumber"])
     return blocks
+
 
 def interblock_times(blocks):
     dts = []
@@ -33,6 +36,25 @@ def interblock_times(blocks):
         if dt >= 0:
             dts.append(dt)
     return dts
+
+
+def percentile(values, p: float):
+    if not values:
+        return None
+    if p <= 0:
+        return min(values)
+    if p >= 100:
+        return max(values)
+    xs = sorted(values)
+    k = (len(xs) - 1) * (p / 100.0)
+    f = int(k)
+    c = min(f + 1, len(xs) - 1)
+    if f == c:
+        return xs[f]
+    d0 = xs[f] * (c - k)
+    d1 = xs[c] * (k - f)
+    return d0 + d1
+
 
 def chain_growth_rate(blocks, window_s: float):
     if len(blocks) < 2:
@@ -49,6 +71,7 @@ def chain_growth_rate(blocks, window_s: float):
         if b["blockTimestamp"] >= t_start:
             count += 1
     return count / effective_window
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -102,23 +125,46 @@ def main():
 
     cgr = chain_growth_rate(blocks, args.window_s)
 
+    tx_counts = []
+    for b in blocks:
+        if "txCount" in b and isinstance(b["txCount"], int):
+            tx_counts.append(b["txCount"])
+
+    tx_total = sum(tx_counts) if tx_counts else None
+    tx_mean = statistics.mean(tx_counts) if tx_counts else None
+    tx_median = statistics.median(tx_counts) if tx_counts else None
+    tx_p95 = percentile(tx_counts, 95) if tx_counts else None
+    tx_max = max(tx_counts) if tx_counts else None
+
     summary = {
         "status": "ok",
         "blocks_observed": len(blocks),
+
         "block_time_mean_s": mean,
         "block_time_variance": variance,
         "max_interblock_gap_s": max_gap,
+
         "stall_threshold_s": stall_threshold,
         "stall_threshold_source": threshold_source,
         "baseline_median_block_time_s": baseline_median,
         "k": args.k,
         "block_period_s": args.block_period_s,
+
         "stall_event_count": len(stalls),
         "stall_events": stalls,
+
         "chain_growth_rate_blocks_per_s_windowed": cgr,
-        "chain_growth_window_s": args.window_s
+        "chain_growth_window_s": args.window_s,
+
+        "tx_total": tx_total,
+        "tx_per_block_mean": tx_mean,
+        "tx_per_block_median": tx_median,
+        "tx_per_block_p95": tx_p95,
+        "tx_per_block_max": tx_max,
     }
+
     print(json.dumps(summary, ensure_ascii=False, indent=2))
+
 
 if __name__ == "__main__":
     main()
