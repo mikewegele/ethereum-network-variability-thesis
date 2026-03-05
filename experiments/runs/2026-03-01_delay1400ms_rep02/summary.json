@@ -1,0 +1,212 @@
+{
+  "status": "ok",
+  "blocks_observed": 63,
+  "block_time_mean_s": 9.85483870967742,
+  "block_time_variance": 5.962799167533819,
+  "max_interblock_gap_s": 28,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "baseline_median",
+  "baseline_median_block_time_s": 2.0,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 39,
+  "stall_events": [
+    {
+      "from_block": 19864,
+      "to_block": 19865,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19865,
+      "to_block": 19866,
+      "dt_s": 28
+    },
+    {
+      "from_block": 19868,
+      "to_block": 19869,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19869,
+      "to_block": 19870,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19871,
+      "to_block": 19872,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19872,
+      "to_block": 19873,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19874,
+      "to_block": 19875,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19876,
+      "to_block": 19877,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19877,
+      "to_block": 19878,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19879,
+      "to_block": 19880,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19880,
+      "to_block": 19881,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19882,
+      "to_block": 19883,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19883,
+      "to_block": 19884,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19885,
+      "to_block": 19886,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19887,
+      "to_block": 19888,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19888,
+      "to_block": 19889,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19890,
+      "to_block": 19891,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19891,
+      "to_block": 19892,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19893,
+      "to_block": 19894,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19894,
+      "to_block": 19895,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19896,
+      "to_block": 19897,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19898,
+      "to_block": 19899,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19899,
+      "to_block": 19900,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19901,
+      "to_block": 19902,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19902,
+      "to_block": 19903,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19904,
+      "to_block": 19905,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19905,
+      "to_block": 19906,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19907,
+      "to_block": 19908,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19908,
+      "to_block": 19909,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19910,
+      "to_block": 19911,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19912,
+      "to_block": 19913,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19913,
+      "to_block": 19914,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19915,
+      "to_block": 19916,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19916,
+      "to_block": 19917,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19918,
+      "to_block": 19919,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19919,
+      "to_block": 19920,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19921,
+      "to_block": 19922,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19923,
+      "to_block": 19924,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19924,
+      "to_block": 19925,
+      "dt_s": 10
+    }
+  ],
+  "chain_growth_rate_blocks_per_s_windowed": 0.11666666666666667,
+  "chain_growth_window_s": 60.0
+}

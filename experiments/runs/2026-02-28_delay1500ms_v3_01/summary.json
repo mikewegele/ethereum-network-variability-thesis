@@ -1,0 +1,297 @@
+{
+  "status": "ok",
+  "blocks_observed": 60,
+  "block_time_mean_s": 9.88135593220339,
+  "block_time_variance": 0.5113473139902327,
+  "max_interblock_gap_s": 11,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "baseline_median",
+  "baseline_median_block_time_s": 2.0,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 56,
+  "stall_events": [
+    {
+      "from_block": 15168,
+      "to_block": 15169,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15169,
+      "to_block": 15170,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15170,
+      "to_block": 15171,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15171,
+      "to_block": 15172,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15172,
+      "to_block": 15173,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15173,
+      "to_block": 15174,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15174,
+      "to_block": 15175,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15175,
+      "to_block": 15176,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15176,
+      "to_block": 15177,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15177,
+      "to_block": 15178,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15178,
+      "to_block": 15179,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15179,
+      "to_block": 15180,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15180,
+      "to_block": 15181,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15181,
+      "to_block": 15182,
+      "dt_s": 11
+    },
+    {
+      "from_block": 15182,
+      "to_block": 15183,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15183,
+      "to_block": 15184,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15184,
+      "to_block": 15185,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15185,
+      "to_block": 15186,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15186,
+      "to_block": 15187,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15187,
+      "to_block": 15188,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15188,
+      "to_block": 15189,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15189,
+      "to_block": 15190,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15190,
+      "to_block": 15191,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15191,
+      "to_block": 15192,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15192,
+      "to_block": 15193,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15193,
+      "to_block": 15194,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15194,
+      "to_block": 15195,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15195,
+      "to_block": 15196,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15196,
+      "to_block": 15197,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15197,
+      "to_block": 15198,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15198,
+      "to_block": 15199,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15199,
+      "to_block": 15200,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15200,
+      "to_block": 15201,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15201,
+      "to_block": 15202,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15202,
+      "to_block": 15203,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15203,
+      "to_block": 15204,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15204,
+      "to_block": 15205,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15205,
+      "to_block": 15206,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15206,
+      "to_block": 15207,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15207,
+      "to_block": 15208,
+      "dt_s": 11
+    },
+    {
+      "from_block": 15208,
+      "to_block": 15209,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15209,
+      "to_block": 15210,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15210,
+      "to_block": 15211,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15211,
+      "to_block": 15212,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15212,
+      "to_block": 15213,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15213,
+      "to_block": 15214,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15214,
+      "to_block": 15215,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15215,
+      "to_block": 15216,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15216,
+      "to_block": 15217,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15217,
+      "to_block": 15218,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15218,
+      "to_block": 15219,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15219,
+      "to_block": 15220,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15220,
+      "to_block": 15221,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15221,
+      "to_block": 15222,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15222,
+      "to_block": 15223,
+      "dt_s": 10
+    },
+    {
+      "from_block": 15223,
+      "to_block": 15224,
+      "dt_s": 10
+    }
+  ],
+  "chain_growth_rate_blocks_per_s_windowed": 0.11666666666666667,
+  "chain_growth_window_s": 60.0
+}

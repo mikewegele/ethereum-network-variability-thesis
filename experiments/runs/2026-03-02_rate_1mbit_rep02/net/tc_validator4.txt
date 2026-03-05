@@ -1,0 +1,3 @@
+qdisc tbf 8014: root refcnt 15 rate 1Mbit burst 32Kb lat 400ms 
+ Sent 7466 bytes 29 pkt (dropped 0, overlimits 0 requeues 0) 
+ backlog 0b 0p requeues 0

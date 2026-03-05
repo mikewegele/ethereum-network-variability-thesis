@@ -1,0 +1,142 @@
+{
+  "status": "ok",
+  "blocks_observed": 26,
+  "block_time_mean_s": 20.68,
+  "block_time_variance": 9.8176,
+  "max_interblock_gap_s": 36,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "baseline_median",
+  "baseline_median_block_time_s": 2.0,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 25,
+  "stall_events": [
+    {
+      "from_block": 17372,
+      "to_block": 17373,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17373,
+      "to_block": 17374,
+      "dt_s": 36
+    },
+    {
+      "from_block": 17374,
+      "to_block": 17375,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17375,
+      "to_block": 17376,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17376,
+      "to_block": 17377,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17377,
+      "to_block": 17378,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17378,
+      "to_block": 17379,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17379,
+      "to_block": 17380,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17380,
+      "to_block": 17381,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17381,
+      "to_block": 17382,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17382,
+      "to_block": 17383,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17383,
+      "to_block": 17384,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17384,
+      "to_block": 17385,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17385,
+      "to_block": 17386,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17386,
+      "to_block": 17387,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17387,
+      "to_block": 17388,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17388,
+      "to_block": 17389,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17389,
+      "to_block": 17390,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17390,
+      "to_block": 17391,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17391,
+      "to_block": 17392,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17392,
+      "to_block": 17393,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17393,
+      "to_block": 17394,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17394,
+      "to_block": 17395,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17395,
+      "to_block": 17396,
+      "dt_s": 21
+    },
+    {
+      "from_block": 17396,
+      "to_block": 17397,
+      "dt_s": 20
+    }
+  ],
+  "chain_growth_rate_blocks_per_s_windowed": 0.05,
+  "chain_growth_window_s": 60.0
+}

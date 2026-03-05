@@ -1,0 +1,107 @@
+{
+  "status": "ok",
+  "blocks_observed": 19,
+  "block_time_mean_s": 20.944444444444443,
+  "block_time_variance": 13.385802469135802,
+  "max_interblock_gap_s": 36,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "baseline_median",
+  "baseline_median_block_time_s": 2.0,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 18,
+  "stall_events": [
+    {
+      "from_block": 17350,
+      "to_block": 17351,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17351,
+      "to_block": 17352,
+      "dt_s": 36
+    },
+    {
+      "from_block": 17352,
+      "to_block": 17353,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17353,
+      "to_block": 17354,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17354,
+      "to_block": 17355,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17355,
+      "to_block": 17356,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17356,
+      "to_block": 17357,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17357,
+      "to_block": 17358,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17358,
+      "to_block": 17359,
+      "dt_s": 21
+    },
+    {
+      "from_block": 17359,
+      "to_block": 17360,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17360,
+      "to_block": 17361,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17361,
+      "to_block": 17362,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17362,
+      "to_block": 17363,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17363,
+      "to_block": 17364,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17364,
+      "to_block": 17365,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17365,
+      "to_block": 17366,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17366,
+      "to_block": 17367,
+      "dt_s": 20
+    },
+    {
+      "from_block": 17367,
+      "to_block": 17368,
+      "dt_s": 20
+    }
+  ],
+  "chain_growth_rate_blocks_per_s_windowed": 0.06666666666666667,
+  "chain_growth_window_s": 60.0
+}

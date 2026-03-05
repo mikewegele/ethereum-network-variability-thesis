@@ -1,0 +1,9 @@
+{
+  "ts_start_local": 1772270311.831889,
+  "ts_end_local": 1772271586.281236,
+  "duration_s_target": 600,
+  "duration_s_observed": 1274.4493470191956,
+  "start_blockNumber": 13108,
+  "end_blockNumber": 13225,
+  "rpc": "http://localhost:8545"
+}

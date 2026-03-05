@@ -1,0 +1,22 @@
+{
+  "status": "ok",
+  "blocks_observed": 165,
+  "block_time_mean_s": 3.701219512195122,
+  "block_time_variance": 1.3192668054729328,
+  "max_interblock_gap_s": 17,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "baseline_median",
+  "baseline_median_block_time_s": 2.0,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 1,
+  "stall_events": [
+    {
+      "from_block": 18883,
+      "to_block": 18884,
+      "dt_s": 17
+    }
+  ],
+  "chain_growth_rate_blocks_per_s_windowed": 0.2833333333333333,
+  "chain_growth_window_s": 60.0
+}

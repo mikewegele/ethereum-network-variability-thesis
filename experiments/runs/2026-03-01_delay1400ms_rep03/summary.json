@@ -1,0 +1,217 @@
+{
+  "status": "ok",
+  "blocks_observed": 63,
+  "block_time_mean_s": 9.790322580645162,
+  "block_time_variance": 1.6173257023933403,
+  "max_interblock_gap_s": 19,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "baseline_median",
+  "baseline_median_block_time_s": 2.0,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 40,
+  "stall_events": [
+    {
+      "from_block": 19944,
+      "to_block": 19945,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19945,
+      "to_block": 19946,
+      "dt_s": 19
+    },
+    {
+      "from_block": 19946,
+      "to_block": 19947,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19948,
+      "to_block": 19949,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19949,
+      "to_block": 19950,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19951,
+      "to_block": 19952,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19952,
+      "to_block": 19953,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19954,
+      "to_block": 19955,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19956,
+      "to_block": 19957,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19957,
+      "to_block": 19958,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19959,
+      "to_block": 19960,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19960,
+      "to_block": 19961,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19962,
+      "to_block": 19963,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19963,
+      "to_block": 19964,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19965,
+      "to_block": 19966,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19967,
+      "to_block": 19968,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19968,
+      "to_block": 19969,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19970,
+      "to_block": 19971,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19971,
+      "to_block": 19972,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19973,
+      "to_block": 19974,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19974,
+      "to_block": 19975,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19976,
+      "to_block": 19977,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19977,
+      "to_block": 19978,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19979,
+      "to_block": 19980,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19981,
+      "to_block": 19982,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19982,
+      "to_block": 19983,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19984,
+      "to_block": 19985,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19985,
+      "to_block": 19986,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19987,
+      "to_block": 19988,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19988,
+      "to_block": 19989,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19990,
+      "to_block": 19991,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19992,
+      "to_block": 19993,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19993,
+      "to_block": 19994,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19995,
+      "to_block": 19996,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19996,
+      "to_block": 19997,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19998,
+      "to_block": 19999,
+      "dt_s": 10
+    },
+    {
+      "from_block": 19999,
+      "to_block": 20000,
+      "dt_s": 10
+    },
+    {
+      "from_block": 20001,
+      "to_block": 20002,
+      "dt_s": 10
+    },
+    {
+      "from_block": 20003,
+      "to_block": 20004,
+      "dt_s": 10
+    },
+    {
+      "from_block": 20004,
+      "to_block": 20005,
+      "dt_s": 10
+    }
+  ],
+  "chain_growth_rate_blocks_per_s_windowed": 0.11666666666666667,
+  "chain_growth_window_s": 60.0
+}
