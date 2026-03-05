@@ -6,4 +6,4 @@ for v in validator1 validator2 validator3 validator4; do
     sh -lc "tc qdisc del dev eth0 root >/dev/null 2>&1 || true"
 done
 
-echo "cleared rate limit on all validators"
+echo "cleared rate limit"
