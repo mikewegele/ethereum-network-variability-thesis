@@ -138,7 +138,6 @@ def main():
 
     ap.add_argument("--end_read_budget_s", type=float, default=20.0)
 
-    # Default: fetch blocks after run (so analyze_run always has data)
     ap.add_argument("--fetch_blocks_after", action="store_true", default=True)
     ap.add_argument("--no_fetch_blocks_after", action="store_true", default=False)
 
@@ -203,13 +202,13 @@ def main():
             try:
                 vals = rpc_call(
                     args.rpc,
-                    "ibft_getValidatorsByBlockNumber",
+                    "qbft_getValidatorsByBlockNumber",
                     ["latest"],
                     retries=2,
                     sleep_s=0.2,
                 )
                 if vals is None:
-                    raise RuntimeError("ibft_getValidatorsByBlockNumber returned None")
+                    raise RuntimeError("qbft_getValidatorsByBlockNumber returned None")
                 write_jsonl(validators_path, {"ts_local": now_local, "validators": vals})
             except Exception as e:
                 write_jsonl(validators_path, {"ts_local": now_local, "error": str(e)})

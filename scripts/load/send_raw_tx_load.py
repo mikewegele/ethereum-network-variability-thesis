@@ -19,11 +19,17 @@ def rpc_call(
     sleep_s: float = 0.2,
 ) -> Any:
     last_err: Optional[Exception] = None
-    payload = json.dumps({"jsonrpc": "2.0", "method": method, "params": params, "id": 1}).encode("utf-8")
+    payload = json.dumps(
+        {"jsonrpc": "2.0", "method": method, "params": params, "id": 1}
+    ).encode("utf-8")
 
     for i in range(max(1, retries)):
         try:
-            req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+            req = urllib.request.Request(
+                url,
+                data=payload,
+                headers={"Content-Type": "application/json"},
+            )
             with urllib.request.urlopen(req, timeout=timeout_s) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
             if "error" in data:
@@ -32,7 +38,6 @@ def rpc_call(
         except Exception as e:
             last_err = e
             if i < retries - 1:
-                # exponential backoff + tiny jitter
                 backoff = sleep_s * (1.6 ** i)
                 backoff *= 1.0 + random.random() * 0.2
                 time.sleep(backoff)
@@ -46,7 +51,13 @@ def hex_to_int(x: str) -> int:
 
 def get_latest_block(rpc_url: str, retries: int = 6) -> Optional[dict]:
     try:
-        b = rpc_call(rpc_url, "eth_getBlockByNumber", ["latest", False], retries=retries, sleep_s=0.2)
+        b = rpc_call(
+            rpc_url,
+            "eth_getBlockByNumber",
+            ["latest", False],
+            retries=retries,
+            sleep_s=0.2,
+        )
         return b if isinstance(b, dict) else None
     except Exception:
         return None
@@ -58,7 +69,6 @@ def get_base_fee_wei(rpc_url: str, last_base: int) -> int:
         return last_base
     base_hex = b.get("baseFeePerGas")
     if base_hex is None:
-        # pre-London or baseFee disabled -> keep last (often 0)
         return last_base
     try:
         return hex_to_int(base_hex)
@@ -76,21 +86,20 @@ def main():
     ap.add_argument("--gas", type=int, default=21000)
     ap.add_argument("--chain_id", type=int, default=1337)
     ap.add_argument("--max_inflight", type=int, default=32)
-    ap.add_argument("--refresh_s", type=float, default=1.0)
+    ap.add_argument("--refresh_s", type=float, default=0.5)
     ap.add_argument("--data_bytes", type=int, default=0)
     ap.add_argument("--data_fill", choices=["zero", "rand"], default="rand")
 
-    # EIP-1559 fees
     ap.add_argument("--priority_fee_wei", type=int, default=1_000_000)
     ap.add_argument("--max_fee_wei", type=int, default=None)
 
-    # run control
     ap.add_argument("--duration_s", type=float, default=None)
     ap.add_argument("--max_txs", type=int, default=None)
 
-    # fallback mode if baseFee missing (pre-London)
     ap.add_argument("--legacy_if_no_basefee", action="store_true", default=True)
     ap.add_argument("--gas_price_wei", type=int, default=1_000_000)
+
+    ap.add_argument("--nonce_retry_sleep_s", type=float, default=1.0)
 
     args = ap.parse_args()
 
@@ -110,15 +119,28 @@ def main():
     if args.data_bytes == 0:
         data_hex = None
     else:
-        data = (b"\x00" * args.data_bytes) if args.data_fill == "zero" else os.urandom(args.data_bytes)
+        data = (
+            b"\x00" * args.data_bytes
+            if args.data_fill == "zero"
+            else os.urandom(args.data_bytes)
+        )
         data_hex = "0x" + data.hex()
         worst_case = 21000 + 16 * args.data_bytes
         if args.gas < worst_case:
             args.gas = worst_case
 
     def get_nonce(tag: str) -> int:
-        r = rpc_call(args.rpc, "eth_getTransactionCount", [from_addr, tag], retries=6, sleep_s=0.2)
+        r = rpc_call(
+            args.rpc,
+            "eth_getTransactionCount",
+            [from_addr, tag],
+            retries=6,
+            sleep_s=0.2,
+        )
         return hex_to_int(r)
+
+    def refresh_nonces() -> Tuple[int, int]:
+        return get_nonce("latest"), get_nonce("pending")
 
     def compute_fees(last_base: int) -> Tuple[int, int, int]:
         base = get_base_fee_wei(args.rpc, last_base)
@@ -131,13 +153,11 @@ def main():
             max_fee = base + prio
         return base, prio, max_fee
 
-    # initial state
     last_base = 0
     base_fee, prio_fee, max_fee = compute_fees(last_base)
     last_base = base_fee
 
-    latest_nonce = get_nonce("latest")
-    pending_nonce = get_nonce("pending")
+    latest_nonce, pending_nonce = refresh_nonces()
     next_nonce = max(latest_nonce, pending_nonce)
 
     print("from", from_addr)
@@ -153,9 +173,8 @@ def main():
 
     t0 = time.time()
     next_t = t0
-    last_refresh = 0.0  # force refresh immediately
+    last_refresh = 0.0
 
-    # keep these current for backlog checks
     latest_nonce_seen = latest_nonce
     pending_nonce_seen = pending_nonce
 
@@ -167,20 +186,20 @@ def main():
         if args.max_txs is not None and sent >= int(args.max_txs):
             break
 
-        # refresh chain state
         if (now - last_refresh) >= args.refresh_s:
             try:
-                latest_nonce_seen = get_nonce("latest")
-                pending_nonce_seen = get_nonce("pending")
+                latest_nonce_seen, pending_nonce_seen = refresh_nonces()
+
                 if next_nonce < latest_nonce_seen:
                     next_nonce = latest_nonce_seen
                 if next_nonce < pending_nonce_seen:
+                    next_nonce = pending_nonce_seen
+                if next_nonce > pending_nonce_seen + max(1, int(args.max_inflight)):
                     next_nonce = pending_nonce_seen
 
                 base_fee, prio_fee, max_fee = compute_fees(last_base)
                 last_base = base_fee
             except Exception as e:
-                # don't die on refresh hiccup; keep running with last known values
                 if failed % 10 == 0:
                     print("WARN refresh_error", str(e))
             last_refresh = now
@@ -196,7 +215,6 @@ def main():
             continue
         next_t = now + interval
 
-        # build tx (EIP-1559 if baseFee known; else legacy if enabled)
         tx = {
             "nonce": next_nonce,
             "to": to_addr,
@@ -220,7 +238,6 @@ def main():
             if args.legacy_if_no_basefee:
                 tx["gasPrice"] = int(args.gas_price_wei)
             else:
-                # still send type2 with fee=prio (keeps format consistent)
                 tx["type"] = 2
                 tx["maxPriorityFeePerGas"] = prio_fee
                 tx["maxFeePerGas"] = prio_fee
@@ -228,18 +245,46 @@ def main():
         try:
             signed = Account.sign_transaction(tx, private_key=pk)
             raw = "0x" + signed.raw_transaction.hex()
-            rpc_call(args.rpc, "eth_sendRawTransaction", [raw], retries=5, sleep_s=0.15)
+            rpc_call(
+                args.rpc,
+                "eth_sendRawTransaction",
+                [raw],
+                retries=5,
+                sleep_s=0.15,
+            )
             sent += 1
             next_nonce += 1
+
         except Exception as e:
             failed += 1
-            # resync nonce pointers occasionally
+            err = str(e).lower()
+
             try:
-                latest_nonce_seen = get_nonce("latest")
-                pending_nonce_seen = get_nonce("pending")
-                next_nonce = max(next_nonce, latest_nonce_seen, pending_nonce_seen)
+                latest_nonce_seen, pending_nonce_seen = refresh_nonces()
             except Exception:
                 pass
+
+            if "already known" in err:
+                next_nonce = max(next_nonce + 1, pending_nonce_seen)
+                continue
+
+            if "nonce too low" in err:
+                next_nonce = max(latest_nonce_seen, pending_nonce_seen)
+                time.sleep(0.05)
+                continue
+
+            if "replacement transaction underpriced" in err:
+                next_nonce = max(latest_nonce_seen, pending_nonce_seen)
+                time.sleep(0.1)
+                continue
+
+            if "transaction nonce is too distant" in err or "nonce is too distant" in err:
+                next_nonce = pending_nonce_seen
+                time.sleep(float(args.nonce_retry_sleep_s))
+                continue
+
+            next_nonce = max(latest_nonce_seen, pending_nonce_seen)
+
             if failed % 10 == 0:
                 print("failures", failed, "last_err", str(e))
 
@@ -257,7 +302,7 @@ def main():
                 "baseFee", base_fee,
                 "prioFee", prio_fee,
                 "maxFee", max_fee,
-                "mode", ("1559" if use_1559 else "legacy")
+                "mode", ("1559" if use_1559 else "legacy"),
             )
 
     dt = max(0.001, time.time() - t0)

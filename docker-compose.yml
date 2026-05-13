@@ -1,6 +1,6 @@
 services:
   validator1:
-    image: hyperledger/besu:latest
+    image: hyperledger/besu:26.2.0
     container_name: validator1
     cap_add: [NET_ADMIN]
     command:
@@ -10,7 +10,7 @@ services:
       - --rpc-http-enabled
       - --rpc-http-host=0.0.0.0
       - --rpc-http-port=8545
-      - --rpc-http-api=ETH,NET,IBFT,TXPOOL
+      - --rpc-http-api=ETH,NET,QBFT,TXPOOL,WEB3
       - --host-allowlist=*
       - --rpc-http-cors-origins=all
 
@@ -26,7 +26,7 @@ services:
       - "30303:30303"
 
   validator2:
-    image: hyperledger/besu:latest
+    image: hyperledger/besu:26.2.0
     container_name: validator2
     cap_add: [NET_ADMIN]
     depends_on: [validator1]
@@ -37,7 +37,7 @@ services:
       - --rpc-http-enabled
       - --rpc-http-host=0.0.0.0
       - --rpc-http-port=8545
-      - --rpc-http-api=ETH,NET,IBFT,TXPOOL
+      - --rpc-http-api=ETH,NET,QBFT,TXPOOL,WEB3
       - --host-allowlist=*
       - --rpc-http-cors-origins=all
 
@@ -55,7 +55,7 @@ services:
       - "30304:30303"
 
   validator3:
-    image: hyperledger/besu:latest
+    image: hyperledger/besu:26.2.0
     container_name: validator3
     cap_add: [NET_ADMIN]
     depends_on: [validator1]
@@ -66,7 +66,7 @@ services:
       - --rpc-http-enabled
       - --rpc-http-host=0.0.0.0
       - --rpc-http-port=8545
-      - --rpc-http-api=ETH,NET,IBFT,TXPOOL
+      - --rpc-http-api=ETH,NET,QBFT,TXPOOL,WEB3
       - --host-allowlist=*
       - --rpc-http-cors-origins=all
 
@@ -84,7 +84,7 @@ services:
       - "30305:30303"
 
   validator4:
-    image: hyperledger/besu:latest
+    image: hyperledger/besu:26.2.0
     container_name: validator4
     cap_add: [NET_ADMIN]
     depends_on: [validator1]
@@ -95,7 +95,7 @@ services:
       - --rpc-http-enabled
       - --rpc-http-host=0.0.0.0
       - --rpc-http-port=8545
-      - --rpc-http-api=ETH,NET,IBFT,TXPOOL
+      - --rpc-http-api=ETH,NET,QBFT,TXPOOL,WEB3
       - --host-allowlist=*
       - --rpc-http-cors-origins=all
 

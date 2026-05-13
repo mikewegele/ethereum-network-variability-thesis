@@ -3,7 +3,7 @@
     "chainId" : 1337,
     "berlinBlock" : 0,
     "londonBlock" : 0,
-    "ibft2" : {
+    "qbft" : {
       "blockperiodseconds" : 2,
       "epochlength" : 30000,
       "requesttimeoutseconds" : 4
@@ -18,7 +18,19 @@
   "alloc" : {
     "feaf0823c5c078f1afbef36f0b5455e70988f9d7" : {
       "balance" : "0x3635C9ADC5DEA00000"
+    },
+    "72f600290db05d917133d0ac3619cac264a07608" : {
+      "balance" : "0x3635C9ADC5DEA00000"
+    },
+    "ac7a78e39b4541f1e7ca0f444cd8ccf3a611ec28" : {
+      "balance" : "0x3635C9ADC5DEA00000"
+    },
+    "3267cba996136949aec3e47f0acc735eb7d0dd39" : {
+      "balance" : "0x3635C9ADC5DEA00000"
+    },
+    "0781cb68c1e2875d44cc745478fa89f92bb5d9ec" : {
+      "balance" : "0x3635C9ADC5DEA00000"
     }
   },
-  "extraData" : "0xf87ea00000000000000000000000000000000000000000000000000000000000000000f854944149b963b1eb3558b788f333c72589b19e68118b949f02dd4b546f524723466880785ea1de92c3973a940eba9b1bf1b6f02957fc38862bf7b3e5f31f3aaf94a2c2fcfd7c82780c05eba00f94a4ec74eaae81a7808400000000c0"
+  "extraData" : "0xf87aa00000000000000000000000000000000000000000000000000000000000000000f854940eba9b1bf1b6f02957fc38862bf7b3e5f31f3aaf944149b963b1eb3558b788f333c72589b19e68118b949f02dd4b546f524723466880785ea1de92c3973a94a2c2fcfd7c82780c05eba00f94a4ec74eaae81a7c080c0"
 }

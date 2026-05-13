@@ -3,8 +3,8 @@ set -euo pipefail
 
 echo "== reset_network =="
 
-GENESIS="ibftOutput/genesis.json"
-KEYS_DIR="ibftOutput/keys"
+GENESIS="qbftOutput/genesis.json"
+KEYS_DIR="qbftOutput/keys"
 
 echo "Stopping network..."
 docker compose down -v >/dev/null 2>&1 || true
@@ -33,7 +33,6 @@ cp "$GENESIS" config/genesis.json
 
 echo "Restoring validator keys (from address folders)..."
 
-# Collect key files: ibftOutput/keys/<something>/key
 KEY_FILES="$(find "$KEYS_DIR" -mindepth 2 -maxdepth 2 -type f -name key | sort)"
 
 COUNT="$(printf "%s\n" "$KEY_FILES" | sed '/^\s*$/d' | wc -l | tr -d ' ')"
@@ -55,7 +54,6 @@ done
 echo "Starting validator1..."
 docker compose up -d --force-recreate validator1
 
-# Wait until validator1 exists and has an IP
 for _ in $(seq 1 30); do
   V1_IP="$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' validator1 2>/dev/null || true)"
   [ -n "${V1_IP:-}" ] && break
@@ -68,10 +66,8 @@ if [ -z "${V1_IP:-}" ]; then
   exit 1
 fi
 
-# Wait until Enode URL appears in logs (or container dies)
 NODEID=""
 for _ in $(seq 1 60); do
-  # if container exited, stop early and show logs
   if ! docker ps --format '{{.Names}}' | grep -q '^validator1$'; then
     echo "ERROR: validator1 is not running (exited). Last logs:" >&2
     docker logs --tail 120 validator1 || true

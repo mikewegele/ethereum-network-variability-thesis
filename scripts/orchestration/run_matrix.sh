@@ -9,22 +9,22 @@ RPC="${RPC:-http://localhost:8545}"
 
 # =========================================================
 # MODE
-# baseline | bandwidth | latency | offline | combined
+# baseline | bandwidth | latency | packetloss | offline | combined
 # =========================================================
 MODE="${MODE:-baseline}"
 
 # =========================================================
 # GENERAL RUN SETTINGS
 # =========================================================
-REPS_STR="${REPS:-01 02 03}"
+REPS_STR="${REPS:-01 02 03 04 05}"
 read -r -a REPS <<< "$REPS_STR"
 
-DUR_COLLECT="${DUR_COLLECT:-180}"
-DUR_LOAD="${DUR_LOAD:-180}"
+DUR_COLLECT="${DUR_COLLECT:-360}"
+DUR_LOAD="${DUR_LOAD:-360}"
 COLLECT_TIMEOUT_S="${COLLECT_TIMEOUT_S:-0}"
 
-TX_RATE="${TX_RATE:-10}"
-MAX_INFLIGHT="${MAX_INFLIGHT:-256}"
+TX_RATE="${TX_RATE:-5}"
+MAX_INFLIGHT="${MAX_INFLIGHT:-32}"
 CHAIN_ID="${CHAIN_ID:-1337}"
 
 PK="${PK:-02ac8b117de16f6ea563700605e1cec6fd378ec7a59245d95b427b1cb6a1b152}"
@@ -35,27 +35,36 @@ WINDOW_S="${WINDOW_S:-60}"
 
 BASELINE_REF="${BASELINE_REF:-}"
 RESET_BETWEEN_RUNS="${RESET_BETWEEN_RUNS:-0}"
-PHASE_MODE="${PHASE_MODE:-steady}"
-WARMUP_S="${WARMUP_S:-0}"
-BASELINE_S="${BASELINE_S:-0}"
-STRESS_S="${STRESS_S:-0}"
-RECOVERY_S="${RECOVERY_S:-0}"
+PHASE_MODE="${PHASE_MODE:-phased}"
+WARMUP_S="${WARMUP_S:-60}"
+BASELINE_S="${BASELINE_S:-60}"
+STRESS_S="${STRESS_S:-180}"
+RECOVERY_S="${RECOVERY_S:-60}"
+
+CHAIN_WAIT_MAX_TRIES="${CHAIN_WAIT_MAX_TRIES:-20}"
+CHAIN_WAIT_SLEEP_S="${CHAIN_WAIT_SLEEP_S:-3}"
+CHAIN_WAIT_MIN_DELTA="${CHAIN_WAIT_MIN_DELTA:-1}"
 
 # =========================================================
 # BANDWIDTH SETTINGS
 # =========================================================
-BANDWIDTH_LEVELS_STR="${BANDWIDTH_LEVELS:-unlimited 10mbit 1mbit 128kbit}"
+BANDWIDTH_LEVELS_STR="${BANDWIDTH_LEVELS:-unlimited 10mbit 1mbit 128kbit 64kbit}"
 read -r -a BANDWIDTH_LEVELS <<< "$BANDWIDTH_LEVELS_STR"
 
 # =========================================================
 # LATENCY SETTINGS
 # =========================================================
-LATENCY_LEVELS_STR="${LATENCY_LEVELS:-0 50 100 200 400}"
+LATENCY_LEVELS_STR="${LATENCY_LEVELS:-0 50 100 200 400 800}"
 read -r -a LATENCY_LEVELS <<< "$LATENCY_LEVELS_STR"
 
 # =========================================================
+# PACKET LOSS SETTINGS
+# =========================================================
+PACKET_LOSS_LEVELS_STR="${PACKET_LOSS_LEVELS:-0 1 3 5 10 20}"
+read -r -a PACKET_LOSS_LEVELS <<< "$PACKET_LOSS_LEVELS_STR"
+
+# =========================================================
 # OFFLINE SETTINGS
-# number of validators to disconnect
 # =========================================================
 OFFLINE_LEVELS_STR="${OFFLINE_LEVELS:-1 2}"
 read -r -a OFFLINE_LEVELS <<< "$OFFLINE_LEVELS_STR"
@@ -63,9 +72,8 @@ read -r -a OFFLINE_LEVELS <<< "$OFFLINE_LEVELS_STR"
 # =========================================================
 # COMBINED SETTINGS
 # format: "latency_ms:bandwidth"
-# example: "250:1mbit 500:1mbit 750:1mbit"
 # =========================================================
-COMBINED_LEVELS_STR="${COMBINED_LEVELS:-250:1mbit 500:1mbit 750:1mbit}"
+COMBINED_LEVELS_STR="${COMBINED_LEVELS:-250:1mbit 500:1mbit}"
 read -r -a COMBINED_LEVELS <<< "$COMBINED_LEVELS_STR"
 
 RUN_ROOT="${RUN_ROOT:-experiments/runs}"
@@ -92,6 +100,14 @@ echo "WARMUP_S=$WARMUP_S"
 echo "BASELINE_S=$BASELINE_S"
 echo "STRESS_S=$STRESS_S"
 echo "RECOVERY_S=$RECOVERY_S"
+echo "LATENCY_LEVELS=${LATENCY_LEVELS[*]}"
+echo "PACKET_LOSS_LEVELS=${PACKET_LOSS_LEVELS[*]}"
+echo "BANDWIDTH_LEVELS=${BANDWIDTH_LEVELS[*]}"
+echo "OFFLINE_LEVELS=${OFFLINE_LEVELS[*]}"
+echo "COMBINED_LEVELS=${COMBINED_LEVELS[*]}"
+echo "CHAIN_WAIT_MAX_TRIES=$CHAIN_WAIT_MAX_TRIES"
+echo "CHAIN_WAIT_SLEEP_S=$CHAIN_WAIT_SLEEP_S"
+echo "CHAIN_WAIT_MIN_DELTA=$CHAIN_WAIT_MIN_DELTA"
 echo "========================================================="
 
 cleanup() {
@@ -109,6 +125,31 @@ trap cleanup EXIT INT TERM
 
 timestamp() {
   date +%F_%H-%M-%S
+}
+
+get_block_number() {
+  local payload='{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+  curl -fsS -X POST "$RPC" -H 'Content-Type: application/json' --data "$payload" \
+    | "$PY" -c 'import json,sys; data=json.load(sys.stdin); r=data.get("result"); print(int(r,16) if r else "")' \
+    2>/dev/null || true
+}
+
+write_run_scenario_meta() {
+  local run_dir="$1"
+  cat > "$run_dir/scenario_meta.json" <<EOF
+{
+  "mode": "$MODE",
+  "phase_mode": "$PHASE_MODE",
+  "warmup_s": $WARMUP_S,
+  "baseline_s": $BASELINE_S,
+  "stress_s": $STRESS_S,
+  "recovery_s": $RECOVERY_S,
+  "block_period_s": $BLOCK_PERIOD_S,
+  "window_s": $WINDOW_S,
+  "tx_rate": $TX_RATE,
+  "max_inflight": $MAX_INFLIGHT
+}
+EOF
 }
 
 apply_net_mode() {
@@ -137,6 +178,15 @@ apply_net_mode() {
       else
         echo "Applying latency=${level}ms"
         bash scripts/net/apply_delay.sh "$level"
+      fi
+      ;;
+
+    packetloss)
+      if [ "$level" = "0" ] || [ "$level" = "0.0" ]; then
+        echo "Applying packet loss=0%"
+      else
+        echo "Applying packet loss=${level}%"
+        bash scripts/net/apply_loss.sh "$level"
       fi
       ;;
 
@@ -203,26 +253,53 @@ backfill_blocks_if_missing() {
 
 wait_chain_is_advancing() {
   echo "Waiting for chain to advance..."
-  local a b
 
-  a="$(curl -s -X POST "$RPC" -H 'Content-Type: application/json' \
-    --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-    | "$PY" -c 'import json,sys; print(int(json.load(sys.stdin)["result"],16))')"
+  local tries=0
+  local a=""
+  local b=""
+  local delta=""
 
-  sleep 3
+  while [ "$tries" -lt "$CHAIN_WAIT_MAX_TRIES" ]; do
+    a="$(get_block_number)"
+    if [ -z "${a:-}" ]; then
+      tries=$((tries + 1))
+      echo "WARN: RPC not ready yet (try $tries/$CHAIN_WAIT_MAX_TRIES)"
+      sleep "$CHAIN_WAIT_SLEEP_S"
+      continue
+    fi
 
-  b="$(curl -s -X POST "$RPC" -H 'Content-Type: application/json' \
-    --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
-    | "$PY" -c 'import json,sys; print(int(json.load(sys.stdin)["result"],16))')"
+    sleep "$CHAIN_WAIT_SLEEP_S"
 
-  echo "blockNumber $a -> $b"
-  if [ "$b" -le "$a" ]; then
-    echo "WARN: chain did not advance (yet). Continuing anyway."
-  fi
+    b="$(get_block_number)"
+    if [ -z "${b:-}" ]; then
+      tries=$((tries + 1))
+      echo "WARN: RPC became unavailable while waiting (try $tries/$CHAIN_WAIT_MAX_TRIES)"
+      sleep "$CHAIN_WAIT_SLEEP_S"
+      continue
+    fi
+
+    delta=$((b - a))
+    echo "blockNumber $a -> $b"
+
+    if [ "$delta" -ge "$CHAIN_WAIT_MIN_DELTA" ]; then
+      return 0
+    fi
+
+    tries=$((tries + 1))
+  done
+
+  echo "ERROR: chain did not advance after $CHAIN_WAIT_MAX_TRIES checks."
+  echo "Last observed blockNumber: ${b:-<none>}"
+  return 1
 }
 
 run_analysis() {
   local run_dir="$1"
+  local analysis_offset="0"
+
+  if [ "$PHASE_MODE" = "phased" ]; then
+    analysis_offset="$WARMUP_S"
+  fi
 
   if [ -n "${BASELINE_REF:-}" ]; then
     "$PY" scripts/analysis/analyze_run.py \
@@ -230,12 +307,24 @@ run_analysis() {
       --baseline_run "$BASELINE_REF" \
       --block_period_s "$BLOCK_PERIOD_S" \
       --window_s "$WINDOW_S" \
+      --analysis_start_offset_s "$analysis_offset" \
+      --phase_mode "$PHASE_MODE" \
+      --warmup_s "$WARMUP_S" \
+      --baseline_s "$BASELINE_S" \
+      --stress_s "$STRESS_S" \
+      --recovery_s "$RECOVERY_S" \
       > "$run_dir/summary.json" || true
   else
     "$PY" scripts/analysis/analyze_run.py \
       --run "$run_dir" \
       --block_period_s "$BLOCK_PERIOD_S" \
       --window_s "$WINDOW_S" \
+      --analysis_start_offset_s "$analysis_offset" \
+      --phase_mode "$PHASE_MODE" \
+      --warmup_s "$WARMUP_S" \
+      --baseline_s "$BASELINE_S" \
+      --stress_s "$STRESS_S" \
+      --recovery_s "$RECOVERY_S" \
       > "$run_dir/summary.json" || true
   fi
 }
@@ -277,7 +366,7 @@ run_phased_protocol() {
   COLLECT_PID=""
   LOAD_PID=""
 
-  caffeinate -is "$PY" scripts/collect/collect_rpc.py \
+  "$PY" scripts/collect/collect_rpc.py \
     --rpc "$RPC" \
     --out "$run_dir" \
     --duration "$total_duration" &
@@ -301,23 +390,26 @@ run_phased_protocol() {
 
   echo "Phase 3/4: Stress (${STRESS_S}s)"
   apply_net_mode "$mode" "$level"
-  wait_chain_is_advancing
+
+  if ! wait_chain_is_advancing; then
+    if [ "$mode" = "offline" ] && [ "$level" = "2" ]; then
+      echo "INFO: no chain progress under offline=2 is expected; continuing stress phase."
+    else
+      echo "WARN: chain did not advance after applying impairment; continuing stress phase."
+    fi
+  fi
+
   sleep "$STRESS_S"
 
   echo "Phase 4/4: Recovery (${RECOVERY_S}s)"
   bash scripts/net/clear_net.sh >/dev/null 2>&1 || true
-  wait_chain_is_advancing
+
+  if ! wait_chain_is_advancing; then
+    echo "WARN: chain did not resume immediately after impairment removal; continuing recovery phase."
+  fi
+
   sleep "$RECOVERY_S"
 
-  if [ "$COLLECT_TIMEOUT_S" -gt 0 ]; then
-    if ! timeout "$COLLECT_TIMEOUT_S" bash -lc "wait $COLLECT_PID"; then
-      echo "WARN: collect_rpc timed out after ${COLLECT_TIMEOUT_S}s -> killing collector"
-      kill "$COLLECT_PID" >/dev/null 2>&1 || true
-      wait "$COLLECT_PID" >/dev/null 2>&1 || true
-    fi
-  else
-    wait "$COLLECT_PID" || true
-  fi
   wait "$LOAD_PID" || true
   COLLECT_PID=""
   LOAD_PID=""
@@ -330,20 +422,22 @@ run_one() {
 
   local label
   case "$mode" in
-    baseline)  label="baseline" ;;
-    bandwidth) label="bw_${level}" ;;
-    latency)   label="lat_${level}ms" ;;
-    offline)   label="offline_${level}" ;;
+    baseline)   label="baseline" ;;
+    bandwidth)  label="bw_${level}" ;;
+    latency)    label="lat_${level}ms" ;;
+    packetloss) label="loss_${level}pct" ;;
+    offline)    label="offline_${level}" ;;
     combined)
       local delay_ms="${level%%:*}"
       local bw="${level##*:}"
       label="combined_${delay_ms}ms_${bw}"
       ;;
-    *)         label="misc_${level}" ;;
+    *)          label="misc_${level}" ;;
   esac
 
   local run_dir="$RUN_ROOT/$mode/$(timestamp)_${label}_rep${rep}"
   mkdir -p "$run_dir"
+  write_run_scenario_meta "$run_dir"
 
   echo
   echo "========================================================="
@@ -366,7 +460,7 @@ run_one() {
     wait_chain_is_advancing
 
     COLLECT_PID=""
-    caffeinate -is "$PY" scripts/collect/collect_rpc.py \
+    "$PY" scripts/collect/collect_rpc.py \
       --rpc "$RPC" \
       --out "$run_dir" \
       --duration "$DUR_COLLECT" &
@@ -405,7 +499,11 @@ run_one() {
 }
 
 main() {
-  wait_chain_is_advancing
+  if [ "$RESET_BETWEEN_RUNS" = "1" ]; then
+    echo "RESET_BETWEEN_RUNS=1 -> skipping initial RPC wait, first run will reset the network."
+  else
+    wait_chain_is_advancing
+  fi
 
   case "$MODE" in
     baseline)
@@ -427,6 +525,13 @@ main() {
         done
       done
       ;;
+    packetloss)
+      for level in "${PACKET_LOSS_LEVELS[@]}"; do
+        for rep in "${REPS[@]}"; do
+          run_one packetloss "$level" "$rep"
+        done
+      done
+      ;;
     offline)
       for level in "${OFFLINE_LEVELS[@]}"; do
         for rep in "${REPS[@]}"; do
@@ -443,7 +548,7 @@ main() {
       ;;
     *)
       echo "ERROR: unsupported MODE='$MODE'"
-      echo "Use one of: baseline | bandwidth | latency | offline | combined"
+      echo "Use one of: baseline | bandwidth | latency | packetloss | offline | combined"
       exit 1
       ;;
   esac
