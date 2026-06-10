@@ -510,7 +510,7 @@ def main():
     ap.add_argument(
         "--scenario",
         default="all",
-        choices=["all", "baseline", "latency", "packetloss", "bandwidth", "offline", "combined"],
+        choices=["all", "baseline", "latency", "packetloss", "bandwidth", "partition", "combined"],
     )
     ap.add_argument("--dataset", default=None)
     ap.add_argument("--only-ok", action="store_true", default=True)
@@ -528,7 +528,7 @@ def main():
         "rep",
         "latency_ms",
         "packet_loss_pct",
-        "offline_n",
+        "partition",
         "blocks_observed",
         "raw_blocks_observed",
         "analysis_start_offset_s",
@@ -632,13 +632,13 @@ def main():
             bw_order=bw_order,
         )
 
-    if args.scenario in ("all", "offline"):
+    if args.scenario in ("all", "partition"):
         plot_scenario_family(
             df=df,
             out_dir=out_dir,
-            scenario="offline",
-            x_col="offline_n",
-            xlabel="Offline validators",
+            scenario="partition",
+            x_col="partition",
+            xlabel="Network partition",
             sort_kind="numeric",
         )
 

@@ -1,0 +1,17 @@
+{
+  "ts_start_local": 1776578793.6159308,
+  "ts_end_local": 1776579153.6333282,
+  "duration_s_target": 360,
+  "duration_s_observed": 360.0186113329837,
+  "sleep_suspected": false,
+  "sleep_suspect_ratio": 1.2,
+  "start_blockNumber": 2,
+  "end_blockNumber": 61,
+  "rpc": "http://localhost:8545",
+  "fetch_blocks_after": true,
+  "end_read_budget_s": 20.0,
+  "fetch_started_local": 1776579153.6396558,
+  "fetch_finished_local": 1776579153.761157,
+  "fetch_duration_s": 0.12150245800148696,
+  "fetched_blocks_expected": 60
+}

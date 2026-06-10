@@ -1,0 +1,228 @@
+{
+  "status": "ok",
+  "blocks_observed": 63,
+  "raw_blocks_observed": 93,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 32643,
+  "block_time_mean_s": 4.838709677419355,
+  "block_time_variance": 42.00624349635796,
+  "max_interblock_gap_s": 28,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 10,
+  "stall_events": [
+    {
+      "from_block": 32674,
+      "to_block": 32675,
+      "dt_s": 14,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32675,
+      "to_block": 32676,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32676,
+      "to_block": 32677,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32677,
+      "to_block": 32678,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32679,
+      "to_block": 32680,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32680,
+      "to_block": 32681,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32682,
+      "to_block": 32683,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32683,
+      "to_block": 32684,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32685,
+      "to_block": 32686,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32686,
+      "to_block": 32687,
+      "dt_s": 20,
+      "kind": "inter_block"
+    }
+  ],
+  "stall_duration_total_s": 178.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 50,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": 0.3333333333333333,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 717,
+  "tx_per_block_mean": 11.380952380952381,
+  "tx_per_block_median": 10,
+  "tx_per_block_p95": 30.899999999999984,
+  "tx_per_block_max": 34,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 32643,
+      "end_block_exclusive": 32673,
+      "blocks_observed": 30,
+      "tx_total": 293,
+      "tx_per_block_mean": 9.766666666666667,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 10.0,
+      "tx_per_block_max": 11,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5172413793103449,
+      "phase_start_ts": 1780341090,
+      "phase_end_ts": 1780341150,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    },
+    "stress_phase": {
+      "start_block": 32673,
+      "end_block_exclusive": 32684,
+      "blocks_observed": 11,
+      "tx_total": 183,
+      "tx_per_block_mean": 16.636363636363637,
+      "tx_per_block_median": 16,
+      "tx_per_block_p95": 33.0,
+      "tx_per_block_max": 33,
+      "status": "ok",
+      "block_time_mean_s": 13.6,
+      "block_time_median_s": 12.0,
+      "block_time_p95_s": 28.0,
+      "block_time_variance": 62.24,
+      "max_interblock_gap_s": 28,
+      "chain_growth_rate_blocks_per_s_windowed": 0.08333333333333333,
+      "phase_start_ts": 1780341150,
+      "phase_end_ts": 1780341330,
+      "stall_event_count": 8,
+      "stall_events": [
+        {
+          "from_block": 32674,
+          "to_block": 32675,
+          "dt_s": 14,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32675,
+          "to_block": 32676,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32676,
+          "to_block": 32677,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32677,
+          "to_block": 32678,
+          "dt_s": 28,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32679,
+          "to_block": 32680,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32680,
+          "to_block": 32681,
+          "dt_s": 28,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32682,
+          "to_block": 32683,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32683,
+          "to_block": null,
+          "dt_s": 44,
+          "kind": "last_block_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 162.0,
+      "missing_finalization_interval_count": 44
+    },
+    "recovery_phase": {
+      "start_block": 32684,
+      "end_block_exclusive": null,
+      "blocks_observed": 22,
+      "tx_total": 241,
+      "tx_per_block_mean": 10.954545454545455,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 20.549999999999994,
+      "tx_per_block_max": 34,
+      "status": "ok",
+      "block_time_mean_s": 3.619047619047619,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 12.0,
+      "block_time_variance": 19.28344671201814,
+      "max_interblock_gap_s": 20,
+      "chain_growth_rate_blocks_per_s_windowed": 0.3333333333333333,
+      "phase_start_ts": 1780341330,
+      "phase_end_ts": 1780341390,
+      "stall_event_count": 2,
+      "stall_events": [
+        {
+          "from_block": 32685,
+          "to_block": 32686,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32686,
+          "to_block": 32687,
+          "dt_s": 20,
+          "kind": "inter_block"
+        }
+      ],
+      "stall_duration_total_s": 32.0,
+      "missing_finalization_interval_count": 10
+    }
+  }
+}

@@ -80,6 +80,19 @@ def parse_latency_ms(run_name: str) -> Optional[int]:
     return None
 
 
+def parse_latency_jitter_ms(run_name: str) -> Optional[int]:
+    patterns = [
+        r"jitter[_-]?(\d+)ms",
+        r"variation[_-]?(\d+)ms",
+        r"var[_-]?(\d+)ms",
+    ]
+    for p in patterns:
+        m = re.search(p, run_name, re.IGNORECASE)
+        if m:
+            return safe_int(m.group(1))
+    return None
+
+
 def parse_bandwidth(run_name: str) -> Optional[str]:
     patterns = [
         r"bw[_-]?([0-9]+(?:kbit|mbit|gbit)|unlimited)",
@@ -93,15 +106,15 @@ def parse_bandwidth(run_name: str) -> Optional[str]:
     return None
 
 
-def parse_offline_n(run_name: str) -> Optional[int]:
+def parse_partition(run_name: str) -> Optional[str]:
     patterns = [
-        r"offline[_-]?(\d+)",
-        r"off[_-]?(\d+)",
+        r"partition[_-]?([0-9]+[-_][0-9]+)",
+        r"part[_-]?([0-9]+[-_][0-9]+)",
     ]
     for p in patterns:
         m = re.search(p, run_name, re.IGNORECASE)
         if m:
-            return safe_int(m.group(1))
+            return m.group(1).replace("_", "-")
     return None
 
 
@@ -140,13 +153,37 @@ def parse_combined(run_name: str) -> Tuple[Optional[int], Optional[str]]:
 
 def infer_scenario(run_dir: str) -> str:
     parts = os.path.normpath(run_dir).split(os.sep)
-    for anchor in ("runs", "runs_pilot", "runs_extended"):
+    valid = (
+        "baseline",
+        "latency",
+        "latency_jitter",
+        "packetloss",
+        "bandwidth",
+        "partition",
+        "combined",
+    )
+
+    for anchor in ("runs", "runs_pilot", "runs_extended", "runs_noisy", "runs_jitter"):
         if anchor in parts:
             i = parts.index(anchor)
             if i + 1 < len(parts):
                 kind = parts[i + 1].lower()
-                if kind in ("baseline", "latency", "packetloss", "bandwidth", "offline", "combined"):
+                if kind in valid:
                     return kind
+
+    run_name = normalize_run_id(run_dir).lower()
+    if "_jitter_" in run_name or "latency_jitter" in run_name:
+        return "latency_jitter"
+    if re.search(r"lat[_-]?\d+ms", run_name):
+        return "latency"
+    if re.search(r"loss[_-]?\d", run_name) or "packetloss" in run_name:
+        return "packetloss"
+    if re.search(r"bw[_-]?", run_name) or "bandwidth" in run_name:
+        return "bandwidth"
+    if "partition" in run_name:
+        return "partition"
+    if "combined" in run_name:
+        return "combined"
 
     return "unknown"
 
@@ -170,18 +207,20 @@ def sort_key(row: Dict[str, Any]) -> Tuple:
     scenario_order = {
         "baseline": 0,
         "latency": 1,
-        "packetloss": 2,
-        "bandwidth": 3,
-        "offline": 4,
-        "combined": 5,
+        "latency_jitter": 2,
+        "packetloss": 3,
+        "bandwidth": 4,
+        "partition": 5,
+        "combined": 6,
         "unknown": 9,
     }
 
     scenario = row.get("scenario", "unknown")
     latency_ms = safe_int(row.get("latency_ms"))
+    latency_jitter_ms = safe_int(row.get("latency_jitter_ms"))
     packet_loss_pct = safe_float(row.get("packet_loss_pct"))
     bandwidth = row.get("bandwidth")
-    offline_n = safe_int(row.get("offline_n"))
+    partition = row.get("partition")
     rep = safe_int(row.get("rep"))
 
     bandwidth_num = rate_to_kbit(bandwidth) if bandwidth is not None else None
@@ -189,9 +228,10 @@ def sort_key(row: Dict[str, Any]) -> Tuple:
     return (
         scenario_order.get(scenario, 99),
         latency_ms if latency_ms is not None else 10**9,
+        latency_jitter_ms if latency_jitter_ms is not None else 10**9,
         packet_loss_pct if packet_loss_pct is not None else 10**9,
         -(bandwidth_num if bandwidth_num is not None else -1),
-        offline_n if offline_n is not None else 10**9,
+        partition if partition is not None else "zz",
         rep if rep is not None else 10**9,
         row.get("run_dir", ""),
     )
@@ -215,6 +255,55 @@ def get_phase_metric(summary: Dict[str, Any], phase: str, key: str):
     return phase_obj.get(key)
 
 
+def compute_expected_blocks(stress_duration_s: float, block_period_s) -> Optional[float]:
+    bp = safe_float(block_period_s)
+    if bp is None or bp <= 0:
+        return None
+    return stress_duration_s / bp
+
+
+def compute_share(value, denominator) -> Optional[float]:
+    v = safe_float(value)
+    d = safe_float(denominator)
+    if v is None or d is None or d <= 0:
+        return None
+    return v / d
+
+
+def classify_stress_regime(growth, stall_duration, missing_count, block_period_s, stress_duration_s: float = 180.0) -> Optional[str]:
+    bp = safe_float(block_period_s)
+    if bp is None or bp <= 0:
+        bp = 2.0
+
+    g = safe_float(growth)
+    s = safe_float(stall_duration)
+    m = safe_float(missing_count)
+
+    nominal_growth = 1.0 / bp
+    stalled_growth_threshold = 0.50 * nominal_growth
+    expected_blocks = stress_duration_s / bp
+
+    missing_share = compute_share(m, expected_blocks)
+    stall_share = compute_share(s, stress_duration_s)
+
+    if g is not None and g < stalled_growth_threshold:
+        return "stalled"
+
+    if missing_share is not None and missing_share >= 0.48:
+        return "stalled"
+
+    if stall_share is not None and stall_share >= (1.0 / 3.0):
+        return "stalled"
+
+    if s is not None and m is not None and s == 0 and m == 0:
+        return "stable"
+
+    if g is not None or s is not None or m is not None:
+        return "degraded"
+
+    return None
+
+
 FIELDNAMES = [
     "run_dir",
     "run_id",
@@ -223,9 +312,10 @@ FIELDNAMES = [
     "status",
     "phase_mode",
     "latency_ms",
+    "latency_jitter_ms",
     "packet_loss_pct",
     "bandwidth",
-    "offline_n",
+    "partition",
 
     "blocks_observed",
     "raw_blocks_observed",
@@ -244,6 +334,7 @@ FIELDNAMES = [
     "baseline_analysis_start_block",
     "k",
     "block_period_s",
+    "request_timeout_s",
 
     "stall_event_count",
     "stall_ratio",
@@ -287,6 +378,10 @@ FIELDNAMES = [
     "stress_phase_stall_event_count",
     "stress_phase_stall_duration_total_s",
     "stress_phase_missing_finalization_interval_count",
+    "stress_phase_expected_blocks",
+    "stress_phase_missing_share",
+    "stress_phase_stall_share",
+    "stress_phase_regime",
 
     "recovery_phase_status",
     "recovery_phase_blocks_observed",
@@ -320,7 +415,7 @@ def main():
     ap.add_argument(
         "--scenario",
         default=None,
-        choices=["baseline", "latency", "packetloss", "bandwidth", "offline", "combined"],
+        choices=["baseline", "latency", "latency_jitter", "packetloss", "bandwidth", "partition", "combined"],
     )
     ap.add_argument("--only-ok", action="store_true")
     ap.add_argument("--normalize-run-id", action="store_true", default=True)
@@ -352,20 +447,54 @@ def main():
             continue
 
         latency_ms = None
+        latency_jitter_ms = None
         packet_loss_pct = None
         bandwidth = None
-        offline_n = None
+        partition = None
 
         if scenario == "latency":
             latency_ms = parse_latency_ms(run_name)
+        elif scenario == "latency_jitter":
+            latency_ms = parse_latency_ms(run_name)
+            latency_jitter_ms = parse_latency_jitter_ms(run_name)
         elif scenario == "packetloss":
             packet_loss_pct = parse_packet_loss_pct(run_name)
         elif scenario == "bandwidth":
             bandwidth = parse_bandwidth(run_name)
-        elif scenario == "offline":
-            offline_n = parse_offline_n(run_name)
+        elif scenario == "partition":
+            partition = parse_partition(run_name)
         elif scenario == "combined":
             latency_ms, bandwidth = parse_combined(run_name)
+
+        stress_duration_s = 180.0
+        block_period_s = summary.get("block_period_s") or 2.0
+
+        stress_growth = get_phase_metric(
+            summary,
+            "stress_phase",
+            "chain_growth_rate_blocks_per_s_windowed",
+        )
+        stress_stall_duration = get_phase_metric(
+            summary,
+            "stress_phase",
+            "stall_duration_total_s",
+        )
+        stress_missing_count = get_phase_metric(
+            summary,
+            "stress_phase",
+            "missing_finalization_interval_count",
+        )
+
+        stress_expected_blocks = compute_expected_blocks(stress_duration_s, block_period_s)
+        stress_missing_share = compute_share(stress_missing_count, stress_expected_blocks)
+        stress_stall_share = compute_share(stress_stall_duration, stress_duration_s)
+        stress_regime = classify_stress_regime(
+            stress_growth,
+            stress_stall_duration,
+            stress_missing_count,
+            block_period_s,
+            stress_duration_s,
+        )
 
         row = {
             "run_dir": os.path.relpath(run_dir, os.getcwd()),
@@ -376,9 +505,10 @@ def main():
             "phase_mode": summary.get("phase_mode"),
 
             "latency_ms": latency_ms,
+            "latency_jitter_ms": latency_jitter_ms,
             "packet_loss_pct": packet_loss_pct,
             "bandwidth": bandwidth,
-            "offline_n": offline_n,
+            "partition": partition,
 
             "blocks_observed": summary.get("blocks_observed"),
             "raw_blocks_observed": summary.get("raw_blocks_observed"),
@@ -397,6 +527,7 @@ def main():
             "baseline_analysis_start_block": summary.get("baseline_analysis_start_block"),
             "k": summary.get("k"),
             "block_period_s": summary.get("block_period_s"),
+            "request_timeout_s": summary.get("request_timeout_s"),
 
             "stall_event_count": summary.get("stall_event_count"),
             "stall_ratio": compute_stall_ratio(
@@ -443,6 +574,10 @@ def main():
             "stress_phase_stall_event_count": get_phase_metric(summary, "stress_phase", "stall_event_count"),
             "stress_phase_stall_duration_total_s": get_phase_metric(summary, "stress_phase", "stall_duration_total_s"),
             "stress_phase_missing_finalization_interval_count": get_phase_metric(summary, "stress_phase", "missing_finalization_interval_count"),
+            "stress_phase_expected_blocks": stress_expected_blocks,
+            "stress_phase_missing_share": stress_missing_share,
+            "stress_phase_stall_share": stress_stall_share,
+            "stress_phase_regime": stress_regime,
 
             "recovery_phase_status": get_phase_metric(summary, "recovery_phase", "status"),
             "recovery_phase_blocks_observed": get_phase_metric(summary, "recovery_phase", "blocks_observed"),

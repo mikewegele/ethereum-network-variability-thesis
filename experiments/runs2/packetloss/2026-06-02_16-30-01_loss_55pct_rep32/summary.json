@@ -1,0 +1,143 @@
+{
+  "status": "ok",
+  "blocks_observed": 98,
+  "raw_blocks_observed": 128,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 41221,
+  "block_time_mean_s": 3.082474226804124,
+  "block_time_variance": 31.024125836964608,
+  "max_interblock_gap_s": 41,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 3,
+  "stall_events": [
+    {
+      "from_block": 41264,
+      "to_block": 41265,
+      "dt_s": 30,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 41282,
+      "to_block": 41283,
+      "dt_s": 30,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 41285,
+      "to_block": 41286,
+      "dt_s": 41,
+      "kind": "inter_block"
+    }
+  ],
+  "stall_duration_total_s": 101.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 26,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": 0.5166666666666667,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 961,
+  "tx_per_block_mean": 9.806122448979592,
+  "tx_per_block_median": 10.0,
+  "tx_per_block_p95": 17.14999999999999,
+  "tx_per_block_max": 34,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 41221,
+      "end_block_exclusive": 41251,
+      "blocks_observed": 30,
+      "tx_total": 293,
+      "tx_per_block_mean": 9.766666666666667,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 10.0,
+      "tx_per_block_max": 10,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5172413793103449,
+      "phase_start_ts": 1780410661,
+      "phase_end_ts": 1780410721,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    },
+    "stress_phase": {
+      "start_block": 41251,
+      "end_block_exclusive": 41288,
+      "blocks_observed": 37,
+      "tx_total": 364,
+      "tx_per_block_mean": 9.837837837837839,
+      "tx_per_block_median": 10,
+      "tx_per_block_p95": 32.199999999999996,
+      "tx_per_block_max": 34,
+      "status": "ok",
+      "block_time_mean_s": 4.888888888888889,
+      "block_time_median_s": 2.0,
+      "block_time_p95_s": 30.0,
+      "block_time_variance": 78.37654320987654,
+      "max_interblock_gap_s": 41,
+      "chain_growth_rate_blocks_per_s_windowed": 0.08333333333333333,
+      "phase_start_ts": 1780410721,
+      "phase_end_ts": 1780410901,
+      "stall_event_count": 3,
+      "stall_events": [
+        {
+          "from_block": 41264,
+          "to_block": 41265,
+          "dt_s": 30,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 41282,
+          "to_block": 41283,
+          "dt_s": 30,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 41285,
+          "to_block": 41286,
+          "dt_s": 41,
+          "kind": "inter_block"
+        }
+      ],
+      "stall_duration_total_s": 101.0,
+      "missing_finalization_interval_count": 27
+    },
+    "recovery_phase": {
+      "start_block": 41288,
+      "end_block_exclusive": null,
+      "blocks_observed": 31,
+      "tx_total": 304,
+      "tx_per_block_mean": 9.806451612903226,
+      "tx_per_block_median": 10,
+      "tx_per_block_p95": 13.0,
+      "tx_per_block_max": 17,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2.0,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5166666666666667,
+      "phase_start_ts": 1780410901,
+      "phase_end_ts": 1780410961,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    }
+  }
+}

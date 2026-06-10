@@ -1,0 +1,133 @@
+{
+  "status": "ok",
+  "blocks_observed": 1,
+  "raw_blocks_observed": 1,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 31289,
+  "block_time_mean_s": null,
+  "block_time_variance": 0.0,
+  "max_interblock_gap_s": null,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 1,
+  "stall_events": [
+    {
+      "from_block": 31289,
+      "to_block": null,
+      "dt_s": 4654,
+      "kind": "last_block_to_phase_end"
+    }
+  ],
+  "stall_duration_total_s": 4654.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 1163,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": null,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 9,
+  "tx_per_block_mean": 9,
+  "tx_per_block_median": 9,
+  "tx_per_block_p95": 9,
+  "tx_per_block_max": 9,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 31289,
+      "end_block_exclusive": 31289,
+      "blocks_observed": 0,
+      "tx_total": null,
+      "tx_per_block_mean": null,
+      "tx_per_block_median": null,
+      "tx_per_block_p95": null,
+      "tx_per_block_max": null,
+      "status": "insufficient_blocks",
+      "block_time_mean_s": null,
+      "block_time_median_s": null,
+      "block_time_p95_s": null,
+      "block_time_variance": null,
+      "max_interblock_gap_s": null,
+      "chain_growth_rate_blocks_per_s_windowed": null,
+      "phase_start_ts": 1778505441,
+      "phase_end_ts": 1778505501,
+      "stall_event_count": 1,
+      "stall_events": [
+        {
+          "from_block": null,
+          "to_block": null,
+          "dt_s": 60,
+          "kind": "phase_start_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 60.0,
+      "missing_finalization_interval_count": 15
+    },
+    "stress_phase": {
+      "start_block": 31289,
+      "end_block_exclusive": 31289,
+      "blocks_observed": 0,
+      "tx_total": null,
+      "tx_per_block_mean": null,
+      "tx_per_block_median": null,
+      "tx_per_block_p95": null,
+      "tx_per_block_max": null,
+      "status": "insufficient_blocks",
+      "block_time_mean_s": null,
+      "block_time_median_s": null,
+      "block_time_p95_s": null,
+      "block_time_variance": null,
+      "max_interblock_gap_s": null,
+      "chain_growth_rate_blocks_per_s_windowed": null,
+      "phase_start_ts": 1778505501,
+      "phase_end_ts": 1778505681,
+      "stall_event_count": 1,
+      "stall_events": [
+        {
+          "from_block": null,
+          "to_block": null,
+          "dt_s": 180,
+          "kind": "phase_start_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 180.0,
+      "missing_finalization_interval_count": 45
+    },
+    "recovery_phase": {
+      "start_block": 31289,
+      "end_block_exclusive": null,
+      "blocks_observed": 1,
+      "tx_total": 9,
+      "tx_per_block_mean": 9,
+      "tx_per_block_median": 9,
+      "tx_per_block_p95": 9,
+      "tx_per_block_max": 9,
+      "status": "insufficient_blocks",
+      "block_time_mean_s": null,
+      "block_time_median_s": null,
+      "block_time_p95_s": null,
+      "block_time_variance": null,
+      "max_interblock_gap_s": null,
+      "chain_growth_rate_blocks_per_s_windowed": null,
+      "phase_start_ts": 1778505681,
+      "phase_end_ts": 1778505741,
+      "stall_event_count": 1,
+      "stall_events": [
+        {
+          "from_block": 31289,
+          "to_block": null,
+          "dt_s": 4654,
+          "kind": "last_block_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 4654.0,
+      "missing_finalization_interval_count": 1163
+    }
+  }
+}

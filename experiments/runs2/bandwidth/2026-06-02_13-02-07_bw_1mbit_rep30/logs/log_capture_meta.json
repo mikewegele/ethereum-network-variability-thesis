@@ -1,0 +1,8 @@
+{
+  "capture_besu_logs": "1",
+  "containers": "validator1 validator2 validator3 validator4 ",
+  "started_at_utc": "2026-06-02T11:02:07Z",
+  "started_at_local": "2026-06-02T13:02:07+02:00",
+  "stopped_at_utc": "2026-06-02T11:08:18Z",
+  "stopped_at_local": "2026-06-02T13:08:18+02:00"
+}

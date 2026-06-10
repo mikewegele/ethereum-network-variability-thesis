@@ -1,6 +1,6 @@
 services:
   validator1:
-    image: hyperledger/besu:26.2.0
+    image: local/besu-noisy:latest
     container_name: validator1
     cap_add: [NET_ADMIN]
     command:
@@ -26,7 +26,7 @@ services:
       - "30303:30303"
 
   validator2:
-    image: hyperledger/besu:26.2.0
+    image: local/besu-noisy:latest
     container_name: validator2
     cap_add: [NET_ADMIN]
     depends_on: [validator1]
@@ -55,7 +55,7 @@ services:
       - "30304:30303"
 
   validator3:
-    image: hyperledger/besu:26.2.0
+    image: local/besu-noisy:latest
     container_name: validator3
     cap_add: [NET_ADMIN]
     depends_on: [validator1]
@@ -84,7 +84,7 @@ services:
       - "30305:30303"
 
   validator4:
-    image: hyperledger/besu:26.2.0
+    image: local/besu-noisy:latest
     container_name: validator4
     cap_add: [NET_ADMIN]
     depends_on: [validator1]

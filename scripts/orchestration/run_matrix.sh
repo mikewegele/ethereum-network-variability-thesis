@@ -7,15 +7,8 @@ cd "$ROOT"
 PY="${PY:-$ROOT/.venv/bin/python3}"
 RPC="${RPC:-http://localhost:8545}"
 
-# =========================================================
-# MODE
-# baseline | bandwidth | latency | packetloss | offline | combined
-# =========================================================
 MODE="${MODE:-baseline}"
 
-# =========================================================
-# GENERAL RUN SETTINGS
-# =========================================================
 REPS_STR="${REPS:-01 02 03 04 05}"
 read -r -a REPS <<< "$REPS_STR"
 
@@ -45,39 +38,36 @@ CHAIN_WAIT_MAX_TRIES="${CHAIN_WAIT_MAX_TRIES:-20}"
 CHAIN_WAIT_SLEEP_S="${CHAIN_WAIT_SLEEP_S:-3}"
 CHAIN_WAIT_MIN_DELTA="${CHAIN_WAIT_MIN_DELTA:-1}"
 
-# =========================================================
-# BANDWIDTH SETTINGS
-# =========================================================
 BANDWIDTH_LEVELS_STR="${BANDWIDTH_LEVELS:-unlimited 10mbit 1mbit 128kbit 64kbit}"
 read -r -a BANDWIDTH_LEVELS <<< "$BANDWIDTH_LEVELS_STR"
 
-# =========================================================
-# LATENCY SETTINGS
-# =========================================================
 LATENCY_LEVELS_STR="${LATENCY_LEVELS:-0 50 100 200 400 800}"
 read -r -a LATENCY_LEVELS <<< "$LATENCY_LEVELS_STR"
 
-# =========================================================
-# PACKET LOSS SETTINGS
-# =========================================================
+LATENCY_JITTER_LEVELS_STR="${LATENCY_JITTER_LEVELS:-3000:0 3000:250 3000:500 3000:1000}"
+
+read -r -a LATENCY_JITTER_LEVELS <<< "$LATENCY_JITTER_LEVELS_STR"
+
+LATENCY_JITTER_DISTRIBUTION="${LATENCY_JITTER_DISTRIBUTION:-normal}"
+
 PACKET_LOSS_LEVELS_STR="${PACKET_LOSS_LEVELS:-0 1 3 5 10 20}"
 read -r -a PACKET_LOSS_LEVELS <<< "$PACKET_LOSS_LEVELS_STR"
 
-# =========================================================
-# OFFLINE SETTINGS
-# =========================================================
-OFFLINE_LEVELS_STR="${OFFLINE_LEVELS:-1 2}"
-read -r -a OFFLINE_LEVELS <<< "$OFFLINE_LEVELS_STR"
+PARTITION_LEVELS_STR="${PARTITION_LEVELS:-3-1 2-2}"
+read -r -a PARTITION_LEVELS <<< "$PARTITION_LEVELS_STR"
 
-# =========================================================
-# COMBINED SETTINGS
-# format: "latency_ms:bandwidth"
-# =========================================================
 COMBINED_LEVELS_STR="${COMBINED_LEVELS:-250:1mbit 500:1mbit}"
 read -r -a COMBINED_LEVELS <<< "$COMBINED_LEVELS_STR"
 
 RUN_ROOT="${RUN_ROOT:-experiments/runs}"
 mkdir -p "$RUN_ROOT"
+
+CAPTURE_BESU_LOGS="${CAPTURE_BESU_LOGS:-1}"
+BESU_CONTAINERS_STR="${BESU_CONTAINERS:-validator1 validator2 validator3 validator4}"
+read -r -a BESU_CONTAINERS <<< "$BESU_CONTAINERS_STR"
+
+BESU_LOG_PIDS=()
+BESU_LOG_DIR=""
 
 echo "========================================================="
 echo "run_matrix.sh"
@@ -101,31 +91,126 @@ echo "BASELINE_S=$BASELINE_S"
 echo "STRESS_S=$STRESS_S"
 echo "RECOVERY_S=$RECOVERY_S"
 echo "LATENCY_LEVELS=${LATENCY_LEVELS[*]}"
+echo "LATENCY_JITTER_LEVELS=${LATENCY_JITTER_LEVELS[*]}"
+echo "LATENCY_JITTER_DISTRIBUTION=$LATENCY_JITTER_DISTRIBUTION"
 echo "PACKET_LOSS_LEVELS=${PACKET_LOSS_LEVELS[*]}"
 echo "BANDWIDTH_LEVELS=${BANDWIDTH_LEVELS[*]}"
-echo "OFFLINE_LEVELS=${OFFLINE_LEVELS[*]}"
+echo "PARTITION_LEVELS=${PARTITION_LEVELS[*]}"
 echo "COMBINED_LEVELS=${COMBINED_LEVELS[*]}"
 echo "CHAIN_WAIT_MAX_TRIES=$CHAIN_WAIT_MAX_TRIES"
 echo "CHAIN_WAIT_SLEEP_S=$CHAIN_WAIT_SLEEP_S"
 echo "CHAIN_WAIT_MIN_DELTA=$CHAIN_WAIT_MIN_DELTA"
+echo "CAPTURE_BESU_LOGS=$CAPTURE_BESU_LOGS"
+echo "BESU_CONTAINERS=${BESU_CONTAINERS[*]}"
 echo "========================================================="
 
+timestamp() {
+  date +%F_%H-%M-%S
+}
+
+start_besu_log_capture() {
+  local run_dir="$1"
+
+  BESU_LOG_PIDS=()
+  BESU_LOG_DIR=""
+
+  if [ "$CAPTURE_BESU_LOGS" != "1" ]; then
+    return 0
+  fi
+
+  local logs_dir="$run_dir/logs"
+  local since_ts
+  since_ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+  mkdir -p "$logs_dir"
+  BESU_LOG_DIR="$logs_dir"
+
+  echo "Starting Besu log capture -> $logs_dir"
+
+  for container in "${BESU_CONTAINERS[@]}"; do
+    local out="$logs_dir/${container}.log"
+
+    if docker ps --format '{{.Names}}' | grep -qx "$container"; then
+      docker logs -t --since "$since_ts" -f "$container" > "$out" 2>&1 &
+      BESU_LOG_PIDS+=("$!")
+    else
+      echo "WARN: container not running: $container" > "$out"
+    fi
+  done
+
+  cat > "$logs_dir/log_capture_meta.json" <<EOF
+{
+  "capture_besu_logs": "$CAPTURE_BESU_LOGS",
+  "containers": "$(printf '%s ' "${BESU_CONTAINERS[@]}")",
+  "started_at_utc": "$since_ts",
+  "started_at_local": "$(date -Iseconds)"
+}
+EOF
+}
+
+stop_besu_log_capture() {
+  if [ "${#BESU_LOG_PIDS[@]}" -eq 0 ]; then
+    return 0
+  fi
+
+  echo "Stopping Besu log capture"
+
+  for pid in "${BESU_LOG_PIDS[@]}"; do
+    kill "$pid" >/dev/null 2>&1 || true
+  done
+
+  for pid in "${BESU_LOG_PIDS[@]}"; do
+    wait "$pid" >/dev/null 2>&1 || true
+  done
+
+  if [ -n "${BESU_LOG_DIR:-}" ] && [ -d "$BESU_LOG_DIR" ]; then
+    local stopped_at_utc
+    stopped_at_utc="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+    "$PY" - "$BESU_LOG_DIR/log_capture_meta.json" "$stopped_at_utc" "$(date -Iseconds)" <<'PYEOF' || true
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+stopped_at_utc = sys.argv[2]
+stopped_at_local = sys.argv[3]
+
+data = {}
+if path.exists():
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        data = {}
+
+data["stopped_at_utc"] = stopped_at_utc
+data["stopped_at_local"] = stopped_at_local
+
+path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+PYEOF
+  fi
+
+  BESU_LOG_PIDS=()
+  BESU_LOG_DIR=""
+}
+
 cleanup() {
+  stop_besu_log_capture
+
   bash scripts/net/clear_net.sh >/dev/null 2>&1 || true
+  bash scripts/net/clear_partition.sh >/dev/null 2>&1 || true
+
   if [ -n "${COLLECT_PID:-}" ]; then
     kill "$COLLECT_PID" >/dev/null 2>&1 || true
     wait "$COLLECT_PID" >/dev/null 2>&1 || true
   fi
+
   if [ -n "${LOAD_PID:-}" ]; then
     kill "$LOAD_PID" >/dev/null 2>&1 || true
     wait "$LOAD_PID" >/dev/null 2>&1 || true
   fi
 }
 trap cleanup EXIT INT TERM
-
-timestamp() {
-  date +%F_%H-%M-%S
-}
 
 get_block_number() {
   local payload='{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
@@ -136,9 +221,12 @@ get_block_number() {
 
 write_run_scenario_meta() {
   local run_dir="$1"
+  local level="${2:-}"
+
   cat > "$run_dir/scenario_meta.json" <<EOF
 {
   "mode": "$MODE",
+  "level": "$level",
   "phase_mode": "$PHASE_MODE",
   "warmup_s": $WARMUP_S,
   "baseline_s": $BASELINE_S,
@@ -152,11 +240,16 @@ write_run_scenario_meta() {
 EOF
 }
 
+clear_all_impairments() {
+  bash scripts/net/clear_net.sh >/dev/null 2>&1 || true
+  bash scripts/net/clear_partition.sh >/dev/null 2>&1 || true
+}
+
 apply_net_mode() {
   local mode="$1"
   local level="$2"
 
-  bash scripts/net/clear_net.sh >/dev/null 2>&1 || true
+  clear_all_impairments
 
   case "$mode" in
     baseline)
@@ -181,6 +274,23 @@ apply_net_mode() {
       fi
       ;;
 
+    latency_jitter)
+      local delay_ms="${level%%:*}"
+      local variation_ms="${level##*:}"
+
+      if [ -z "$delay_ms" ] || [ -z "$variation_ms" ] || [ "$delay_ms" = "$level" ]; then
+        echo "ERROR: latency_jitter level must look like 3000:250"
+        exit 1
+      fi
+
+      if [ "$delay_ms" = "0" ] && { [ "$variation_ms" = "0" ] || [ "$variation_ms" = "0ms" ]; }; then
+        echo "Applying latency_jitter=0ms"
+      else
+        echo "Applying latency_jitter delay=${delay_ms}ms variation=${variation_ms}ms distribution=${LATENCY_JITTER_DISTRIBUTION}"
+        bash scripts/net/apply_delay.sh "$delay_ms" "$variation_ms" "$LATENCY_JITTER_DISTRIBUTION"
+      fi
+      ;;
+
     packetloss)
       if [ "$level" = "0" ] || [ "$level" = "0.0" ]; then
         echo "Applying packet loss=0%"
@@ -190,9 +300,9 @@ apply_net_mode() {
       fi
       ;;
 
-    offline)
-      echo "Applying offline validators count=$level"
-      bash scripts/net/apply_offline.sh "$level"
+    partition)
+      echo "Applying network partition=$level"
+      bash scripts/net/apply_partition.sh "$level"
       ;;
 
     combined)
@@ -205,9 +315,11 @@ apply_net_mode() {
       fi
 
       echo "Applying combined latency=${delay_ms}ms bandwidth=${bw}"
+
       if [ "$bw" != "unlimited" ]; then
         bash scripts/net/apply_rate.sh "$bw"
       fi
+
       if [ "$delay_ms" != "0" ]; then
         bash scripts/net/apply_delay.sh "$delay_ms"
       fi
@@ -228,6 +340,7 @@ backfill_blocks_if_missing() {
   if [ -s "$blocks" ]; then
     return 0
   fi
+
   if [ ! -f "$meta" ]; then
     echo "WARN: no run_meta.json -> cannot backfill blocks"
     return 0
@@ -244,6 +357,7 @@ backfill_blocks_if_missing() {
 
   echo "blocks.jsonl missing -> backfill $start..$end"
   rm -f "$blocks"
+
   "$PY" scripts/collect/fetch_blocks_range.py \
     --rpc "$RPC" \
     --out "$blocks" \
@@ -261,6 +375,7 @@ wait_chain_is_advancing() {
 
   while [ "$tries" -lt "$CHAIN_WAIT_MAX_TRIES" ]; do
     a="$(get_block_number)"
+
     if [ -z "${a:-}" ]; then
       tries=$((tries + 1))
       echo "WARN: RPC not ready yet (try $tries/$CHAIN_WAIT_MAX_TRIES)"
@@ -271,6 +386,7 @@ wait_chain_is_advancing() {
     sleep "$CHAIN_WAIT_SLEEP_S"
 
     b="$(get_block_number)"
+
     if [ -z "${b:-}" ]; then
       tries=$((tries + 1))
       echo "WARN: RPC became unavailable while waiting (try $tries/$CHAIN_WAIT_MAX_TRIES)"
@@ -392,8 +508,8 @@ run_phased_protocol() {
   apply_net_mode "$mode" "$level"
 
   if ! wait_chain_is_advancing; then
-    if [ "$mode" = "offline" ] && [ "$level" = "2" ]; then
-      echo "INFO: no chain progress under offline=2 is expected; continuing stress phase."
+    if [ "$mode" = "partition" ] && [ "$level" = "2-2" ]; then
+      echo "INFO: no chain progress under partition=2-2 is expected; continuing stress phase."
     else
       echo "WARN: chain did not advance after applying impairment; continuing stress phase."
     fi
@@ -402,7 +518,7 @@ run_phased_protocol() {
   sleep "$STRESS_S"
 
   echo "Phase 4/4: Recovery (${RECOVERY_S}s)"
-  bash scripts/net/clear_net.sh >/dev/null 2>&1 || true
+  clear_all_impairments
 
   if ! wait_chain_is_advancing; then
     echo "WARN: chain did not resume immediately after impairment removal; continuing recovery phase."
@@ -421,23 +537,41 @@ run_one() {
   local rep="$3"
 
   local label
+
   case "$mode" in
-    baseline)   label="baseline" ;;
-    bandwidth)  label="bw_${level}" ;;
-    latency)    label="lat_${level}ms" ;;
-    packetloss) label="loss_${level}pct" ;;
-    offline)    label="offline_${level}" ;;
+    baseline)
+      label="baseline"
+      ;;
+    bandwidth)
+      label="bw_${level}"
+      ;;
+    latency)
+      label="lat_${level}ms"
+      ;;
+    latency_jitter)
+      local delay_ms="${level%%:*}"
+      local variation_ms="${level##*:}"
+      label="lat_${delay_ms}ms_jitter_${variation_ms}ms"
+      ;;
+    packetloss)
+      label="loss_${level}pct"
+      ;;
+    partition)
+      label="partition_${level}"
+      ;;
     combined)
       local delay_ms="${level%%:*}"
       local bw="${level##*:}"
       label="combined_${delay_ms}ms_${bw}"
       ;;
-    *)          label="misc_${level}" ;;
+    *)
+      label="misc_${level}"
+      ;;
   esac
 
   local run_dir="$RUN_ROOT/$mode/$(timestamp)_${label}_rep${rep}"
   mkdir -p "$run_dir"
-  write_run_scenario_meta "$run_dir"
+  write_run_scenario_meta "$run_dir" "$level"
 
   echo
   echo "========================================================="
@@ -447,6 +581,8 @@ run_one() {
   echo "rep=$rep"
   echo "dir=$run_dir"
   echo "========================================================="
+
+  start_besu_log_capture "$run_dir"
 
   reset_network_if_enabled
 
@@ -460,6 +596,7 @@ run_one() {
     wait_chain_is_advancing
 
     COLLECT_PID=""
+
     "$PY" scripts/collect/collect_rpc.py \
       --rpc "$RPC" \
       --out "$run_dir" \
@@ -484,10 +621,13 @@ run_one() {
     else
       wait "$COLLECT_PID" || true
     fi
+
     COLLECT_PID=""
   fi
 
-  bash scripts/net/clear_net.sh >/dev/null 2>&1 || true
+  clear_all_impairments
+
+  stop_besu_log_capture
 
   backfill_blocks_if_missing "$run_dir"
   run_analysis "$run_dir"
@@ -525,6 +665,13 @@ main() {
         done
       done
       ;;
+    latency_jitter)
+      for level in "${LATENCY_JITTER_LEVELS[@]}"; do
+        for rep in "${REPS[@]}"; do
+          run_one latency_jitter "$level" "$rep"
+        done
+      done
+      ;;
     packetloss)
       for level in "${PACKET_LOSS_LEVELS[@]}"; do
         for rep in "${REPS[@]}"; do
@@ -532,10 +679,10 @@ main() {
         done
       done
       ;;
-    offline)
-      for level in "${OFFLINE_LEVELS[@]}"; do
+    partition)
+      for level in "${PARTITION_LEVELS[@]}"; do
         for rep in "${REPS[@]}"; do
-          run_one offline "$level" "$rep"
+          run_one partition "$level" "$rep"
         done
       done
       ;;
@@ -548,7 +695,7 @@ main() {
       ;;
     *)
       echo "ERROR: unsupported MODE='$MODE'"
-      echo "Use one of: baseline | bandwidth | latency | packetloss | offline | combined"
+      echo "Use one of: baseline | bandwidth | latency | latency_jitter | packetloss | partition | combined"
       exit 1
       ;;
   esac

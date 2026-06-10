@@ -1,0 +1,228 @@
+{
+  "status": "ok",
+  "blocks_observed": 62,
+  "raw_blocks_observed": 92,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 33403,
+  "block_time_mean_s": 4.934426229508197,
+  "block_time_variance": 45.176027949475944,
+  "max_interblock_gap_s": 29,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 10,
+  "stall_events": [
+    {
+      "from_block": 33434,
+      "to_block": 33435,
+      "dt_s": 10,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33435,
+      "to_block": 33436,
+      "dt_s": 10,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33436,
+      "to_block": 33437,
+      "dt_s": 13,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33437,
+      "to_block": 33438,
+      "dt_s": 29,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33439,
+      "to_block": 33440,
+      "dt_s": 13,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33440,
+      "to_block": 33441,
+      "dt_s": 29,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33442,
+      "to_block": 33443,
+      "dt_s": 13,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33443,
+      "to_block": 33444,
+      "dt_s": 29,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33445,
+      "to_block": 33446,
+      "dt_s": 13,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33446,
+      "to_block": 33447,
+      "dt_s": 21,
+      "kind": "inter_block"
+    }
+  ],
+  "stall_duration_total_s": 180.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 48,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": 0.31666666666666665,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 713,
+  "tx_per_block_mean": 11.5,
+  "tx_per_block_median": 10.0,
+  "tx_per_block_p95": 32.599999999999966,
+  "tx_per_block_max": 34,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 33403,
+      "end_block_exclusive": 33433,
+      "blocks_observed": 30,
+      "tx_total": 293,
+      "tx_per_block_mean": 9.766666666666667,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 10.549999999999997,
+      "tx_per_block_max": 12,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5172413793103449,
+      "phase_start_ts": 1780343855,
+      "phase_end_ts": 1780343915,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    },
+    "stress_phase": {
+      "start_block": 33433,
+      "end_block_exclusive": 33444,
+      "blocks_observed": 11,
+      "tx_total": 191,
+      "tx_per_block_mean": 17.363636363636363,
+      "tx_per_block_median": 21,
+      "tx_per_block_p95": 34.0,
+      "tx_per_block_max": 34,
+      "status": "ok",
+      "block_time_mean_s": 13.6,
+      "block_time_median_s": 11.5,
+      "block_time_p95_s": 29.0,
+      "block_time_variance": 68.84,
+      "max_interblock_gap_s": 29,
+      "chain_growth_rate_blocks_per_s_windowed": 0.06666666666666667,
+      "phase_start_ts": 1780343915,
+      "phase_end_ts": 1780344095,
+      "stall_event_count": 8,
+      "stall_events": [
+        {
+          "from_block": 33434,
+          "to_block": 33435,
+          "dt_s": 10,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33435,
+          "to_block": 33436,
+          "dt_s": 10,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33436,
+          "to_block": 33437,
+          "dt_s": 13,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33437,
+          "to_block": 33438,
+          "dt_s": 29,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33439,
+          "to_block": 33440,
+          "dt_s": 13,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33440,
+          "to_block": 33441,
+          "dt_s": 29,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33442,
+          "to_block": 33443,
+          "dt_s": 13,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33443,
+          "to_block": null,
+          "dt_s": 45,
+          "kind": "last_block_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 162.0,
+      "missing_finalization_interval_count": 42
+    },
+    "recovery_phase": {
+      "start_block": 33444,
+      "end_block_exclusive": null,
+      "blocks_observed": 21,
+      "tx_total": 229,
+      "tx_per_block_mean": 10.904761904761905,
+      "tx_per_block_median": 10,
+      "tx_per_block_p95": 19.0,
+      "tx_per_block_max": 33,
+      "status": "ok",
+      "block_time_mean_s": 3.8,
+      "block_time_median_s": 2.0,
+      "block_time_p95_s": 13.400000000000006,
+      "block_time_variance": 22.66,
+      "max_interblock_gap_s": 21,
+      "chain_growth_rate_blocks_per_s_windowed": 0.31666666666666665,
+      "phase_start_ts": 1780344095,
+      "phase_end_ts": 1780344155,
+      "stall_event_count": 2,
+      "stall_events": [
+        {
+          "from_block": 33445,
+          "to_block": 33446,
+          "dt_s": 13,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33446,
+          "to_block": 33447,
+          "dt_s": 21,
+          "kind": "inter_block"
+        }
+      ],
+      "stall_duration_total_s": 34.0,
+      "missing_finalization_interval_count": 10
+    }
+  }
+}

@@ -296,6 +296,7 @@ def main():
     ap.add_argument("--stall_threshold_s", type=float, default=None)
     ap.add_argument("--window_s", type=float, default=60.0)
     ap.add_argument("--block_period_s", type=float, default=2.0)
+    ap.add_argument("--request_timeout_s", type=float, default=None)
     ap.add_argument("--analysis_start_offset_s", type=float, default=0.0)
 
     ap.add_argument("--phase_mode", choices=["steady", "phased"], default="steady")
@@ -347,18 +348,20 @@ def main():
             baseline_median = statistics.median(baseline_dts)
             baseline_p95 = percentile(baseline_dts, 95)
 
+    request_timeout_s = (
+        float(args.request_timeout_s)
+        if args.request_timeout_s is not None
+        else 2.0 * float(args.block_period_s)
+    )
+
+    missing_finalization_interval_threshold_s = request_timeout_s
+
     if args.stall_threshold_s is not None:
         stall_threshold = float(args.stall_threshold_s)
         threshold_source = "explicit"
     else:
-        if baseline_median is not None and baseline_median > 0:
-            stall_threshold = args.k * baseline_median
-            threshold_source = "baseline_median"
-        else:
-            stall_threshold = args.k * args.block_period_s
-            threshold_source = "block_period_fallback"
-
-    missing_finalization_interval_threshold_s = 2.0 * float(args.block_period_s)
+        stall_threshold = 3.0 * request_timeout_s
+        threshold_source = "request_timeout_x3"
 
     analysis_meta = load_run_meta(args.run)
     ts_start_local = analysis_meta.get("ts_start_local")
@@ -392,7 +395,7 @@ def main():
                 delayed_finalization_events.append({
                     "from_block": prev["blockNumber"],
                     "to_block": cur["blockNumber"],
-                    "dt_s": dt
+                    "dt_s": dt,
                 })
 
     cgr = chain_growth_rate(blocks, args.window_s)
@@ -482,6 +485,7 @@ def main():
         "baseline_analysis_start_block": baseline_analysis_start_block,
         "k": args.k,
         "block_period_s": args.block_period_s,
+        "request_timeout_s": request_timeout_s,
 
         "stall_event_count": overall_gap_metrics["stall_event_count"],
         "stall_events": overall_gap_metrics["stall_events"],

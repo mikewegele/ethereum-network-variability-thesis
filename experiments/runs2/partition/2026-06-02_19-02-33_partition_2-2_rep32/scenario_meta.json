@@ -1,0 +1,13 @@
+{
+  "mode": "partition",
+  "level": "2-2",
+  "phase_mode": "phased",
+  "warmup_s": 60,
+  "baseline_s": 60,
+  "stress_s": 180,
+  "recovery_s": 300,
+  "block_period_s": 2,
+  "window_s": 60,
+  "tx_rate": 5,
+  "max_inflight": 32
+}

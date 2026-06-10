@@ -1,0 +1,228 @@
+{
+  "status": "ok",
+  "blocks_observed": 65,
+  "raw_blocks_observed": 95,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 32752,
+  "block_time_mean_s": 4.6875,
+  "block_time_variance": 40.80859375,
+  "max_interblock_gap_s": 28,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 10,
+  "stall_events": [
+    {
+      "from_block": 32784,
+      "to_block": 32785,
+      "dt_s": 11,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32785,
+      "to_block": 32786,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32786,
+      "to_block": 32787,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32788,
+      "to_block": 32789,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32789,
+      "to_block": 32790,
+      "dt_s": 20,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32790,
+      "to_block": 32791,
+      "dt_s": 24,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32791,
+      "to_block": 32792,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32792,
+      "to_block": 32793,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32794,
+      "to_block": 32795,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32795,
+      "to_block": 32796,
+      "dt_s": 21,
+      "kind": "inter_block"
+    }
+  ],
+  "stall_duration_total_s": 180.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 48,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": 0.35,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 714,
+  "tx_per_block_mean": 10.984615384615385,
+  "tx_per_block_median": 10,
+  "tx_per_block_p95": 18.799999999999997,
+  "tx_per_block_max": 33,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 32752,
+      "end_block_exclusive": 32782,
+      "blocks_observed": 30,
+      "tx_total": 293,
+      "tx_per_block_mean": 9.766666666666667,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 10.0,
+      "tx_per_block_max": 11,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5172413793103449,
+      "phase_start_ts": 1780341485,
+      "phase_end_ts": 1780341545,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    },
+    "stress_phase": {
+      "start_block": 32782,
+      "end_block_exclusive": 32793,
+      "blocks_observed": 11,
+      "tx_total": 158,
+      "tx_per_block_mean": 14.363636363636363,
+      "tx_per_block_median": 13,
+      "tx_per_block_p95": 32.0,
+      "tx_per_block_max": 32,
+      "status": "ok",
+      "block_time_mean_s": 13.1,
+      "block_time_median_s": 12.0,
+      "block_time_p95_s": 26.199999999999996,
+      "block_time_variance": 66.89,
+      "max_interblock_gap_s": 28,
+      "chain_growth_rate_blocks_per_s_windowed": 0.06666666666666667,
+      "phase_start_ts": 1780341545,
+      "phase_end_ts": 1780341725,
+      "stall_event_count": 8,
+      "stall_events": [
+        {
+          "from_block": 32784,
+          "to_block": 32785,
+          "dt_s": 11,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32785,
+          "to_block": 32786,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32786,
+          "to_block": 32787,
+          "dt_s": 28,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32788,
+          "to_block": 32789,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32789,
+          "to_block": 32790,
+          "dt_s": 20,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32790,
+          "to_block": 32791,
+          "dt_s": 24,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32791,
+          "to_block": 32792,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32792,
+          "to_block": null,
+          "dt_s": 50,
+          "kind": "last_block_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 169.0,
+      "missing_finalization_interval_count": 43
+    },
+    "recovery_phase": {
+      "start_block": 32793,
+      "end_block_exclusive": null,
+      "blocks_observed": 24,
+      "tx_total": 263,
+      "tx_per_block_mean": 10.958333333333334,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 17.699999999999996,
+      "tx_per_block_max": 33,
+      "status": "ok",
+      "block_time_mean_s": 3.5217391304347827,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 11.599999999999994,
+      "block_time_variance": 19.293005671077506,
+      "max_interblock_gap_s": 21,
+      "chain_growth_rate_blocks_per_s_windowed": 0.35,
+      "phase_start_ts": 1780341725,
+      "phase_end_ts": 1780341785,
+      "stall_event_count": 2,
+      "stall_events": [
+        {
+          "from_block": 32794,
+          "to_block": 32795,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32795,
+          "to_block": 32796,
+          "dt_s": 21,
+          "kind": "inter_block"
+        }
+      ],
+      "stall_duration_total_s": 33.0,
+      "missing_finalization_interval_count": 10
+    }
+  }
+}

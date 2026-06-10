@@ -1,0 +1,228 @@
+{
+  "status": "ok",
+  "blocks_observed": 64,
+  "raw_blocks_observed": 94,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 32862,
+  "block_time_mean_s": 4.761904761904762,
+  "block_time_variance": 37.13378684807256,
+  "max_interblock_gap_s": 28,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 10,
+  "stall_events": [
+    {
+      "from_block": 32893,
+      "to_block": 32894,
+      "dt_s": 14,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32895,
+      "to_block": 32896,
+      "dt_s": 24,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32896,
+      "to_block": 32897,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32897,
+      "to_block": 32898,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32899,
+      "to_block": 32900,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32900,
+      "to_block": 32901,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32902,
+      "to_block": 32903,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32903,
+      "to_block": 32904,
+      "dt_s": 28,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32905,
+      "to_block": 32906,
+      "dt_s": 12,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 32906,
+      "to_block": 32907,
+      "dt_s": 16,
+      "kind": "inter_block"
+    }
+  ],
+  "stall_duration_total_s": 170.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 50,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": 0.3333333333333333,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 726,
+  "tx_per_block_mean": 11.34375,
+  "tx_per_block_median": 10.0,
+  "tx_per_block_p95": 32.849999999999994,
+  "tx_per_block_max": 34,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 32862,
+      "end_block_exclusive": 32892,
+      "blocks_observed": 30,
+      "tx_total": 291,
+      "tx_per_block_mean": 9.7,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 10.0,
+      "tx_per_block_max": 10,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5172413793103449,
+      "phase_start_ts": 1780341876,
+      "phase_end_ts": 1780341936,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    },
+    "stress_phase": {
+      "start_block": 32892,
+      "end_block_exclusive": 32904,
+      "blocks_observed": 12,
+      "tx_total": 194,
+      "tx_per_block_mean": 16.166666666666668,
+      "tx_per_block_median": 15.0,
+      "tx_per_block_p95": 33.45,
+      "tx_per_block_max": 34,
+      "status": "ok",
+      "block_time_mean_s": 12.727272727272727,
+      "block_time_median_s": 12,
+      "block_time_p95_s": 26.0,
+      "block_time_variance": 49.65289256198347,
+      "max_interblock_gap_s": 28,
+      "chain_growth_rate_blocks_per_s_windowed": 0.08333333333333333,
+      "phase_start_ts": 1780341936,
+      "phase_end_ts": 1780342116,
+      "stall_event_count": 8,
+      "stall_events": [
+        {
+          "from_block": 32893,
+          "to_block": 32894,
+          "dt_s": 14,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32895,
+          "to_block": 32896,
+          "dt_s": 24,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32896,
+          "to_block": 32897,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32897,
+          "to_block": 32898,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32899,
+          "to_block": 32900,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32900,
+          "to_block": 32901,
+          "dt_s": 28,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32902,
+          "to_block": 32903,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32903,
+          "to_block": null,
+          "dt_s": 40,
+          "kind": "last_block_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 154.0,
+      "missing_finalization_interval_count": 44
+    },
+    "recovery_phase": {
+      "start_block": 32904,
+      "end_block_exclusive": null,
+      "blocks_observed": 22,
+      "tx_total": 241,
+      "tx_per_block_mean": 10.954545454545455,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 17.9,
+      "tx_per_block_max": 34,
+      "status": "ok",
+      "block_time_mean_s": 3.4285714285714284,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 12.0,
+      "block_time_variance": 13.768707482993197,
+      "max_interblock_gap_s": 16,
+      "chain_growth_rate_blocks_per_s_windowed": 0.3333333333333333,
+      "phase_start_ts": 1780342116,
+      "phase_end_ts": 1780342176,
+      "stall_event_count": 2,
+      "stall_events": [
+        {
+          "from_block": 32905,
+          "to_block": 32906,
+          "dt_s": 12,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 32906,
+          "to_block": 32907,
+          "dt_s": 16,
+          "kind": "inter_block"
+        }
+      ],
+      "stall_duration_total_s": 28.0,
+      "missing_finalization_interval_count": 9
+    }
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "status": "ok",
+  "blocks_observed": 59,
+  "raw_blocks_observed": 89,
+  "genesis_outlier_dropped": false,
+  "analysis_start_offset_s": 60.0,
+  "analysis_start_block": 33081,
+  "block_time_mean_s": 5.155172413793103,
+  "block_time_variance": 53.786266349583826,
+  "max_interblock_gap_s": 29,
+  "stall_threshold_s": 10.0,
+  "stall_threshold_source": "block_period_fallback",
+  "baseline_median_block_time_s": null,
+  "baseline_p95_block_time_s": null,
+  "baseline_analysis_start_block": null,
+  "k": 5.0,
+  "block_period_s": 2.0,
+  "stall_event_count": 9,
+  "stall_events": [
+    {
+      "from_block": 33112,
+      "to_block": 33113,
+      "dt_s": 14,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33113,
+      "to_block": 33114,
+      "dt_s": 21,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33114,
+      "to_block": 33115,
+      "dt_s": 13,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33115,
+      "to_block": 33116,
+      "dt_s": 21,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33116,
+      "to_block": 33117,
+      "dt_s": 29,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33118,
+      "to_block": 33119,
+      "dt_s": 29,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33119,
+      "to_block": 33120,
+      "dt_s": 21,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33120,
+      "to_block": 33121,
+      "dt_s": 29,
+      "kind": "inter_block"
+    },
+    {
+      "from_block": 33121,
+      "to_block": 33122,
+      "dt_s": 10,
+      "kind": "inter_block"
+    }
+  ],
+  "stall_duration_total_s": 187.0,
+  "missing_finalization_interval_threshold_s": 4.0,
+  "missing_finalization_interval_count": 48,
+  "delayed_finalization_threshold_s": null,
+  "delayed_finalization_event_count": 0,
+  "delayed_finalization_events": [],
+  "chain_growth_rate_blocks_per_s_windowed": 0.31666666666666665,
+  "chain_growth_window_s": 60.0,
+  "tx_total": 689,
+  "tx_per_block_mean": 11.677966101694915,
+  "tx_per_block_median": 10,
+  "tx_per_block_p95": 33.0,
+  "tx_per_block_max": 34,
+  "phase_mode": "phased",
+  "phase_metrics": {
+    "baseline_phase": {
+      "start_block": 33081,
+      "end_block_exclusive": 33111,
+      "blocks_observed": 30,
+      "tx_total": 292,
+      "tx_per_block_mean": 9.733333333333333,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 10.0,
+      "tx_per_block_max": 11,
+      "status": "ok",
+      "block_time_mean_s": 2,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 2.0,
+      "block_time_variance": 0,
+      "max_interblock_gap_s": 2,
+      "chain_growth_rate_blocks_per_s_windowed": 0.5172413793103449,
+      "phase_start_ts": 1780342662,
+      "phase_end_ts": 1780342722,
+      "stall_event_count": 0,
+      "stall_events": [],
+      "stall_duration_total_s": 0.0,
+      "missing_finalization_interval_count": 0
+    },
+    "stress_phase": {
+      "start_block": 33111,
+      "end_block_exclusive": 33120,
+      "blocks_observed": 9,
+      "tx_total": 186,
+      "tx_per_block_mean": 20.666666666666668,
+      "tx_per_block_median": 19,
+      "tx_per_block_p95": 33.6,
+      "tx_per_block_max": 34,
+      "status": "ok",
+      "block_time_mean_s": 17.25,
+      "block_time_median_s": 17.5,
+      "block_time_p95_s": 29.0,
+      "block_time_variance": 79.1875,
+      "max_interblock_gap_s": 29,
+      "chain_growth_rate_blocks_per_s_windowed": 0.05,
+      "phase_start_ts": 1780342722,
+      "phase_end_ts": 1780342902,
+      "stall_event_count": 7,
+      "stall_events": [
+        {
+          "from_block": 33112,
+          "to_block": 33113,
+          "dt_s": 14,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33113,
+          "to_block": 33114,
+          "dt_s": 21,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33114,
+          "to_block": 33115,
+          "dt_s": 13,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33115,
+          "to_block": 33116,
+          "dt_s": 21,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33116,
+          "to_block": 33117,
+          "dt_s": 29,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33118,
+          "to_block": 33119,
+          "dt_s": 29,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33119,
+          "to_block": null,
+          "dt_s": 42,
+          "kind": "last_block_to_phase_end"
+        }
+      ],
+      "stall_duration_total_s": 169.0,
+      "missing_finalization_interval_count": 42
+    },
+    "recovery_phase": {
+      "start_block": 33120,
+      "end_block_exclusive": null,
+      "blocks_observed": 20,
+      "tx_total": 211,
+      "tx_per_block_mean": 10.55,
+      "tx_per_block_median": 10.0,
+      "tx_per_block_p95": 17.80000000000001,
+      "tx_per_block_max": 33,
+      "status": "ok",
+      "block_time_mean_s": 4.2105263157894735,
+      "block_time_median_s": 2,
+      "block_time_p95_s": 11.89999999999996,
+      "block_time_variance": 39.42936288088643,
+      "max_interblock_gap_s": 29,
+      "chain_growth_rate_blocks_per_s_windowed": 0.31666666666666665,
+      "phase_start_ts": 1780342902,
+      "phase_end_ts": 1780342962,
+      "stall_event_count": 2,
+      "stall_events": [
+        {
+          "from_block": 33120,
+          "to_block": 33121,
+          "dt_s": 29,
+          "kind": "inter_block"
+        },
+        {
+          "from_block": 33121,
+          "to_block": 33122,
+          "dt_s": 10,
+          "kind": "inter_block"
+        }
+      ],
+      "stall_duration_total_s": 39.0,
+      "missing_finalization_interval_count": 11
+    }
+  }
+}
