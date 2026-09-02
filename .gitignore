@@ -1,58 +1,69 @@
-# =========================
 # OS
-# =========================
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# =========================
 # IntelliJ / IDE
-# =========================
 .idea/
 *.iml
 out/
 
-# =========================
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
 # Node / optional tooling
-# =========================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# =========================
 # Environment files
-# =========================
 .env
 .env.*
 
-# =========================
-# Blockchain sensitive data
-# =========================
-# Validator keys (WICHTIG!)
-nodes/**/key
-nodes/**/key.pub
-nodes/**/data/
+# Blockchain runtime data / sensitive files
+nodes/
+qbftOutput/keys/
+experiments/load_accounts.json
 
-# Generated network files
-nodes/networkFiles/
-
-# =========================
 # Docker
-# =========================
 docker-data/
 *.log
 
-# =========================
 # Temporary files
-# =========================
+.tmp/
 *.tmp
 *.temp
 *.swp
 
-# =========================
-# Experiment outputs (später)
-# =========================
+# Raw / excluded experiment runs
+experiments/runs/
+experiments/runs2/
+experiments/runs_archived/
+experiments/runs_excluded/
+experiments/runs_extended/
+experiments/runs_jitter/
+experiments/runs_noisy/
+experiments/runs_pilot/
+experiments/excluded_runs/
+
+# Generated plots
+experiments/plots/
+
+# Non-final exports
+experiments/exports/interesting_scenarios_ranked.csv
+experiments/exports/latency_extended_stress/
+experiments/exports/noisy/
+experiments/exports/offline_rerun/
+experiments/exports/final_series/offline_stress_summary.csv
+
+# Generic generated outputs
 results/
 metrics/
 plots/
+
+# Local helper files
+repo_files.txt

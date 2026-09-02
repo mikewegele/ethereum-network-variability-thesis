@@ -197,3 +197,4 @@ def prepare_df(csv_path: str) -> pd.DataFrame:
         df["stress_phase_regime"] = df["stress_phase_regime"].astype("string").str.strip()
 
     return df
+    
